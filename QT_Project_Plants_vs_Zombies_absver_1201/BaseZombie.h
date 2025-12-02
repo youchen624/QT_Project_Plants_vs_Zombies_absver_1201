@@ -5,8 +5,8 @@
 #include "ItemRenderable.h"
 
 namespace PVZ {
-namespace Object {
-    class BaseZombie : public ItemTickable
+namespace Zombie {
+    class BaseZombie : public Object::ItemTickable
     {
     public:
         BaseZombie();

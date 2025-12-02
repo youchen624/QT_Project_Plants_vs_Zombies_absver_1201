@@ -1,10 +1,12 @@
 #ifndef ITEMTICKABLE_H
 #define ITEMTICKABLE_H
 
-#include "GameCore.h"
+// #include "GameCore.h"
 
 namespace PVZ {
-namespace Core {};
+namespace Core {
+    class GameCore;
+};
 namespace Object {
     class ItemTickable
     {

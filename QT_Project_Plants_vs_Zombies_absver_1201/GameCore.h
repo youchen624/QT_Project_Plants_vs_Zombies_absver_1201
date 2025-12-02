@@ -18,6 +18,7 @@
 
 // #include "ItemRenderable.h"
 // #include "ItemTickable.h"
+#include "BasePlant.h"
 
 // 50ms/tick == 20ticks/s
 #define TICK_PER_MS 50
@@ -60,13 +61,22 @@ namespace Core {
         void gameover();
 
 
+        // find the first plant posision (for zombie in normal)
         int firstPlant_x(int y);
+
+        enum class State {
+            Pause = 0,
+            Progressing,
+            GameOver_lose,
+            GameOver_win
+        };
 
     private slots:
         void tick();
 
     private:
-        bool pause;
+        // bool pause;
+        State gameState;
         bool _debug;
         QTimer timer;
         QDateTime dateTime;
@@ -74,10 +84,11 @@ namespace Core {
         QGraphicsScene scene;
         QGraphicsView* view;
 
+        // 0 1 2 // more less more close the house
         QVector<QVector<QList<
             Plant::BasePlant*>>> plantsGrid;
 
-        QList<PVZ::Object::ItemRenderable*> itemRender;
+        QList<PVZ::Object::ItemRenderable*>itemRender;
         // QList<> // items
     };
 };
