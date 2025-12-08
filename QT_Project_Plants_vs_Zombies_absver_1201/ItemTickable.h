@@ -6,13 +6,14 @@
 namespace PVZ {
 namespace Core {
     class GameCore;
+    enum class GameState;
 };
 namespace Object {
     class ItemTickable
     {
     public:
-        ItemTickable();
-        virtual void tick(Core::GameCore* core);
+        ItemTickable(Core::GameCore* core);
+        virtual void tick(Core::GameState);
     protected:
         bool pause;
     };

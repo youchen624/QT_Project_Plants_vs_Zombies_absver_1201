@@ -52,8 +52,51 @@ class BasePlant;
 };
 
 namespace Core {
+    // 遊戲模式
+    enum class GameState {
+        Pause = 0,
+        Progressing,
+        GameOver_lose,
+        GameOver_win
+    };
+
+    typedef struct Damage {
+        quint64 value;
+        enum class Type {
+            Normal = 0,
+            Explode,    // 爆炸
+            Bite,       // 啃咬
+            Burn,       // 燃燒
+            Drown,      // 溺水
+            Force       // 原力
+        } type;
+    } Damage;
+
+    typedef struct Protection {
+        enum class Type {
+            Normal,
+            Plastic,
+            Metal
+        } type;
+
+        quint64 value;
+    } Protection;
+
+    typedef struct Weapon {
+        enum class Type {
+            Normal,
+            Metal
+        };
+        virtual void attack(GameCore*) {};
+
+        quint64 boosted;
+    } Weapon;
+
     class GameCore : public QObject
     {
+    Q_OBJECT
+    signals:
+        void tick(GameState);
     public:
         GameCore(QObject *parent = nullptr, bool debug = false);
         void start();
@@ -64,19 +107,12 @@ namespace Core {
         // find the first plant posision (for zombie in normal)
         int firstPlant_x(int y);
 
-        enum class State {
-            Pause = 0,
-            Progressing,
-            GameOver_lose,
-            GameOver_win
-        };
-
     private slots:
-        void tick();
+        void clock();
 
     private:
         // bool pause;
-        State gameState;
+        GameState gameState;
         bool _debug;
         QTimer timer;
         QDateTime dateTime;

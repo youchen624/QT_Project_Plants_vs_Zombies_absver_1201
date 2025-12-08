@@ -6,7 +6,7 @@
 using namespace PVZ::Core;
 
 GameCore::GameCore(QObject *parent, bool debug) : QObject(parent), _debug(debug) {
-    this->gameState = State::Pause;
+    this->gameState = GameState::Pause;
     this->scene.setSceneRect(0, 0, 800, 600);
     this->view = new QGraphicsView(&this->scene);
     view->setWindowTitle("PVZ");
@@ -16,7 +16,7 @@ GameCore::GameCore(QObject *parent, bool debug) : QObject(parent), _debug(debug)
         &timer,
         &QTimer::timeout,
         this,
-        &GameCore::tick
+        &GameCore::clock
     );
 };
 
@@ -24,7 +24,7 @@ void GameCore::start() {
     this->timer.setInterval(TICK_PER_MS);
     this->timer.start();
 
-    this->gameState = State::Progressing;
+    this->gameState = GameState::Progressing;
     qDebug() << "Game starting.\n";
 };
 
@@ -43,12 +43,13 @@ int GameCore::firstPlant_x(int y) {
     return -1;
 };
 
-void GameCore::tick() {
-    if (gameState == State::Pause) return;
+void GameCore::clock() {
+    if (gameState == GameState::Pause) return;
     if (_debug) {
         dateTime = QDateTime::currentDateTime();
         qDebug()
             << dateTime.toString()
         << "ticked\n";
     }
+    emit tick(gameState);
 };
