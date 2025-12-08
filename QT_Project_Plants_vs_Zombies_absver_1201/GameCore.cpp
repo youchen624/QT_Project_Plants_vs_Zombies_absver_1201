@@ -43,13 +43,21 @@ int GameCore::firstPlant_x(int y) {
     return -1;
 };
 
-void GameCore::clock() {
-    if (gameState == GameState::Pause) return;
-    if (_debug) {
-        dateTime = QDateTime::currentDateTime();
-        qDebug()
+void GameCore::tick() {
+    dateTime = QDateTime::currentDateTime();
+    if (gameState == GameState::Pause) {
+        if (_debug) {
+            qDebug()
             << dateTime.toString()
-        << "ticked\n";
+            << "gamecore ticked (game pausing)\n";
+        }
+        return;
+    } else {
+        if (_debug) {
+            qDebug()
+            << dateTime.toString()
+            << "ticked\n";
+        }
+        emit tick(gameState);
     }
-    emit tick(gameState);
 };

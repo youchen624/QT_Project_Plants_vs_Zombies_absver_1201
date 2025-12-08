@@ -60,6 +60,7 @@ namespace Core {
         GameOver_win
     };
 
+    // 傷害
     typedef struct Damage {
         quint64 value;
         enum class Type {
@@ -67,11 +68,13 @@ namespace Core {
             Explode,    // 爆炸
             Bite,       // 啃咬
             Burn,       // 燃燒
+            Poison,     // 毒藥
             Drown,      // 溺水
             Force       // 原力
         } type;
     } Damage;
 
+    // 防禦
     typedef struct Protection {
         enum class Type {
             Normal,
@@ -82,6 +85,7 @@ namespace Core {
         quint64 value;
     } Protection;
 
+    // 武器
     typedef struct Weapon {
         enum class Type {
             Normal,
@@ -92,11 +96,16 @@ namespace Core {
         quint64 boosted;
     } Weapon;
 
+    /* 遊戲核心
+     *
+     */
     class GameCore : public QObject
     {
     Q_OBJECT
+
     signals:
-        void tick(GameState);
+        void tick(GameState gamestate);
+
     public:
         GameCore(QObject *parent = nullptr, bool debug = false);
         void start();
@@ -107,10 +116,8 @@ namespace Core {
         // find the first plant posision (for zombie in normal)
         int firstPlant_x(int y);
 
-    private slots:
-        void clock();
-
     private:
+        void tick();
         // bool pause;
         GameState gameState;
         bool _debug;
