@@ -93,6 +93,9 @@ public:
     QTimer m_timer;
     GameState state;
 
+protected:
+    void mousePressEvent(QMouseEvent* event) override;
+
 private slots:
     void gameTick();
 

@@ -31,6 +31,11 @@ Wallnut::Wallnut(Core::GameCore* core, int row, int col) :
 
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Idle");
+    
+    // Position the plant on the grid
+    qreal x = 250 + col * 100 + 25;
+    qreal y = 80 + row * 100 + 25;
+    aniUnit->setPosition(x, y);
 }
 
 Wallnut::~Wallnut() {

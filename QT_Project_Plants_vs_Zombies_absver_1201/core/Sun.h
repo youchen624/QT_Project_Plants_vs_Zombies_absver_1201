@@ -19,6 +19,8 @@ public:
     bool isCollectable() const { return collectable; }
     void collect();
     int getValue() const { return value; }
+    bool isCollected() const { return collected; }
+    bool contains(qreal x, qreal y) const;
 
 protected:
     qreal x, y;

@@ -30,6 +30,7 @@ General::General(Core::GameCore* core, int row) : Base(core, row) {
     
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Walk");
+    aniUnit->setPosition(x, y);
 }
 
 General::~General() {

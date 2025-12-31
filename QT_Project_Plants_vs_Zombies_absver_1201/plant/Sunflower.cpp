@@ -31,6 +31,11 @@ Sunflower::Sunflower(Core::GameCore* core, int row, int col) :
 
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Idle");
+    
+    // Position the plant on the grid
+    qreal x = 250 + col * 100 + 25;  // GRID_START_X = 250, GRID_SIZE = 100
+    qreal y = 80 + row * 100 + 25;   // GRID_START_Y = 80
+    aniUnit->setPosition(x, y);
 }
 
 Sunflower::~Sunflower() {

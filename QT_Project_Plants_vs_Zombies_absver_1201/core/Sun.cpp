@@ -46,3 +46,9 @@ void Sun::tick(GameState state) {
 void Sun::collect() {
     collected = true;
 }
+
+bool Sun::contains(qreal px, qreal py) const {
+    qreal dx = px - (x + 20);  // 20 is half of diameter (40)
+    qreal dy = py - (y + 20);
+    return (dx * dx + dy * dy) <= 400;  // 20^2 = 400
+}

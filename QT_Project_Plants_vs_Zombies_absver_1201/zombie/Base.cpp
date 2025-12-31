@@ -38,8 +38,9 @@ void Base::tick(Core::GameState state) {
         x -= speed * (slowness ? 0.5 : 1.0);
     }
     
-    // Update animation if exists
+    // Update animation position if exists
     if (aniUnit) {
+        aniUnit->setPosition(x, y);
         aniUnit->update();
     }
     

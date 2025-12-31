@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QMouseEvent>
 
 using namespace PVZ::Core;
 
@@ -235,13 +236,26 @@ void GameCore::checkCollisions() {
         
         if (col >= 0 && col < GRID_COLS && row >= 0 && row < GRID_ROWS) {
             Plant::Base* plant = plants[row][col];
-            if (plant) {
+            if (plant && !plant->isDead()) {
                 // Zombie should start eating
-                zombie->setEating(true);
-                // Plant takes damage (simplified - would need damage system in plants)
+                if (!zombie->isEating()) {
+                    zombie->setEating(true);
+                }
+                
+                // Plant takes damage when zombie attacks
+                if (zombie->isEating()) {
+                    plant->takeDamage(1);  // 1 damage per tick while eating
+                    if (plant->isDead()) {
+                        delete plant;
+                        plants[row][col] = nullptr;
+                        zombie->setEating(false);
+                    }
+                }
             } else {
                 zombie->setEating(false);
             }
+        } else {
+            zombie->setEating(false);
         }
         
         // Check if zombie reached the house
@@ -270,9 +284,13 @@ void GameCore::cleanupDeadObjects() {
         }
     }
     
-    // Remove collected suns
+    // Remove collected/expired suns
     for (int i = suns.size() - 1; i >= 0; i--) {
-        // Sun's tick handles lifetime
+        Sun* sun = suns[i];
+        if (sun->isCollected()) {
+            delete sun;
+            suns.removeAt(i);
+        }
     }
 }
 
@@ -296,4 +314,19 @@ Ground::Ground(GameCore* core) : core(core) {
 }
 
 Ground::~Ground() {
+}
+
+void GameCore::mousePressEvent(QMouseEvent* event) {
+    // Convert window coordinates to scene coordinates
+    QPointF scenePos = m_view->mapToScene(event->pos());
+    
+    // Check if clicked on a sun
+    for (Sun* sun : suns) {
+        if (sun->isCollectable() && sun->contains(scenePos.x(), scenePos.y())) {
+            collectSun(sun);
+            break;
+        }
+    }
+    
+    QMainWindow::mousePressEvent(event);
 }

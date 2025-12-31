@@ -34,6 +34,7 @@ namespace Core {
         ~AnimationUnit();
 
         void setPosition();
+        void setPosition(qreal x, qreal y);
 
         // virtual
         void update();
