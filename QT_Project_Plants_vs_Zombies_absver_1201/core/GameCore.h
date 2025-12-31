@@ -15,7 +15,11 @@
 #define BULLET_COLLISION_THRESHOLD_FRONT 40
 #define BULLET_COLLISION_THRESHOLD_BACK -20
 
-// Helper functions for grid calculations
+// #### #### || #### #### || #### ####
+
+#include "Global.h"
+
+// Helper functions for grid calculations (after Qt headers are included)
 inline qreal getGridX(int col, int offsetX = 25) {
     return GRID_START_X + col * GRID_SIZE + offsetX;
 }
@@ -23,10 +27,6 @@ inline qreal getGridX(int col, int offsetX = 25) {
 inline qreal getGridY(int row, int offsetY = 25) {
     return GRID_START_Y + row * GRID_SIZE + offsetY;
 }
-
-// #### #### || #### #### || #### ####
-
-#include "Global.h"
 
 #include <QMainWindow>
 #include <QObject>
