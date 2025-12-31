@@ -32,10 +32,8 @@ Sunflower::Sunflower(Core::GameCore* core, int row, int col) :
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Idle");
     
-    // Position the plant on the grid
-    qreal x = 250 + col * 100 + 25;  // GRID_START_X = 250, GRID_SIZE = 100
-    qreal y = 80 + row * 100 + 25;   // GRID_START_Y = 80
-    aniUnit->setPosition(x, y);
+    // Position the plant on the grid using helper functions
+    aniUnit->setPosition(getGridX(col), getGridY(row));
 }
 
 Sunflower::~Sunflower() {
@@ -49,11 +47,8 @@ void Sunflower::tick(Core::GameState state) {
 
     // Produce sun
     if (++sun_ticks >= SUN_SPAWN_TICKS) {
-        qreal x = 250 + col * 100 + 30;  // GRID_START_X = 250, GRID_SIZE = 100
-        qreal y = 80 + row * 100 + 30;   // GRID_START_Y = 80
-        
-        core->spawnSun(x, y, false);
-        qDebug() << "Sunflower produced sun at" << x << "," << y;
+        core->spawnSun(getGridX(col, 30), getGridY(row, 30), false);
+        qDebug() << "Sunflower produced sun";
         
         sun_ticks = 0;
     }

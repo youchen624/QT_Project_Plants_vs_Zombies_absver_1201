@@ -25,6 +25,9 @@ public:
     void takeDamage(const Core::Damage& damage);
     bool isEating() const { return eating; }
     void setEating(bool eat) { eating = eat; }
+    
+    qreal getInitialX() const { return x; }
+    qreal getInitialY() const { return y; }
 
 protected:
     qreal x, y;

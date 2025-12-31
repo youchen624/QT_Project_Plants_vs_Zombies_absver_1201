@@ -33,10 +33,8 @@ Peashooter::Peashooter(Core::GameCore* core, int row, int col) :
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Idle");
     
-    // Position the plant on the grid
-    qreal x = 250 + col * 100 + 25;
-    qreal y = 80 + row * 100 + 25;
-    aniUnit->setPosition(x, y);
+    // Position the plant on the grid using helper functions
+    aniUnit->setPosition(getGridX(col), getGridY(row));
 }
 
 Peashooter::~Peashooter() {
@@ -50,11 +48,8 @@ void Peashooter::tick(Core::GameState state) {
 
     // Shoot peas periodically
     if (++shoot_ticks >= SHOOT_INTERVAL_TICKS) {
-        qreal x = 250 + col * 100 + 50;
-        qreal y = 80 + row * 100 + 40;
-        
-        // Create a bullet
-        new Core::Bullet(core, x, y, row);
+        // Create a bullet at the plant's position with offset for shooting point
+        new Core::Bullet(core, getGridX(col, 50), getGridY(row, 40), row);
         
         shoot_ticks = 0;
     }

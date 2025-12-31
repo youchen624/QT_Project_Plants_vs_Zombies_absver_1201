@@ -11,6 +11,19 @@
 #define GRID_START_Y 80
 #define GRID_SIZE 100
 
+// Collision detection constants
+#define BULLET_COLLISION_THRESHOLD_FRONT 40
+#define BULLET_COLLISION_THRESHOLD_BACK -20
+
+// Helper functions for grid calculations
+inline qreal getGridX(int col, int offsetX = 25) {
+    return GRID_START_X + col * GRID_SIZE + offsetX;
+}
+
+inline qreal getGridY(int row, int offsetY = 25) {
+    return GRID_START_Y + row * GRID_SIZE + offsetY;
+}
+
 // #### #### || #### #### || #### ####
 
 #include "Global.h"

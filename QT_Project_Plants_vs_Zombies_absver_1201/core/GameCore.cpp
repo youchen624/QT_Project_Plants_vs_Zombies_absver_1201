@@ -215,9 +215,9 @@ void GameCore::checkCollisions() {
             if (zombie->isDead()) continue;
             if (zombie->getRow() != bullet->getRow()) continue;
             
-            // Simple collision detection
+            // Simple collision detection using defined thresholds
             qreal dx = zombie->getX() - bullet->getX();
-            if (dx < 40 && dx > -20) {
+            if (dx < BULLET_COLLISION_THRESHOLD_FRONT && dx > BULLET_COLLISION_THRESHOLD_BACK) {
                 zombie->takeDamage(bullet->getDamage());
                 bullet->deactivate();
                 break;
