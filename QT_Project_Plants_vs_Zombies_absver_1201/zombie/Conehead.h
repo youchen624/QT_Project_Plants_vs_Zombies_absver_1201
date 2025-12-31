@@ -1,17 +1,17 @@
-#ifndef ZOMBIE_GENERAL_H
-#define ZOMBIE_GENERAL_H
+#ifndef ZOMBIE_CONEHEAD_H
+#define ZOMBIE_CONEHEAD_H
 
 #include "zombie/Base.h"
 
 namespace PVZ {
 namespace Zombie {
 
-class General : public Base
+class Conehead : public Base
 {
     Q_OBJECT
 public:
-    General(Core::GameCore* core, int row);
-    ~General();
+    Conehead(Core::GameCore* core, int row);
+    ~Conehead();
 
 protected:
     const QList<QPixmap>& frames() const;
@@ -20,4 +20,4 @@ protected:
 
 }; };
 
-#endif // ZOMBIE_GENERAL_H
+#endif // ZOMBIE_CONEHEAD_H

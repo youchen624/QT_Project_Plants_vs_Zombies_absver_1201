@@ -8,11 +8,21 @@ AnimationUnit::AnimationUnit(GameCore* core,
                              const QHash<QString, P2>& states) :
     c_frame(0), core(core), frames(frames), motionStates(states) {
     graphic_main = new QGraphicsPixmapItem();
+    core->m_scene->addItem(graphic_main);
 };
 
 AnimationUnit::~AnimationUnit() {
-    delete graphic_main;
+    if (graphic_main && core && core->m_scene) {
+        core->m_scene->removeItem(graphic_main);
+        delete graphic_main;
+    }
 };
+
+void AnimationUnit::setPosition(qreal x, qreal y) {
+    if (graphic_main) {
+        graphic_main->setPos(x, y);
+    }
+}
 
 
 void AnimationUnit::changeMotionState(QString state) {

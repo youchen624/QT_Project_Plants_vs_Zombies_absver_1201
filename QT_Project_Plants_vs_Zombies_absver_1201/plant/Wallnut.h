@@ -1,5 +1,5 @@
-#ifndef SUNFLOWER_H
-#define SUNFLOWER_H
+#ifndef WALLNUT_H
+#define WALLNUT_H
 
 #include "plant/Base.h"
 #include "core/AnimationUnit.h"
@@ -7,16 +7,12 @@
 namespace PVZ {
 namespace Plant {
 
-class Sunflower : public Base
+class Wallnut : public Base
 {
     Q_OBJECT
 public:
-    static constexpr int SUN_VALUE = 25;
-    static constexpr int SUN_SPAWN_TICKS = 500;
-
-public:
-    Sunflower(Core::GameCore* core, int row, int col);
-    ~Sunflower();
+    Wallnut(Core::GameCore* core, int row, int col);
+    ~Wallnut();
 
     void tick(Core::GameState state) override;
 
@@ -26,11 +22,10 @@ protected:
     Core::AnimationUnit* aniUnit;
 
 private:
-    int sun_ticks;
     int row;
     int col;
 };
 
 }; };
 
-#endif // SUNFLOWER_H
+#endif // WALLNUT_H

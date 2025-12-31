@@ -10,21 +10,33 @@ CONFIG += c++17
 
 SOURCES += \
     core/AnimationUnit.cpp \
+    core/Bullet.cpp \
     core/GameCore.cpp \
     core/Global.cpp \
     core/ObjectTickable.cpp \
+    core/Sun.cpp \
     main.cpp \
     plant/Base.cpp \
+    plant/Peashooter.cpp \
     plant/Sunflower.cpp \
+    plant/Wallnut.cpp \
+    zombie/Base.cpp \
+    zombie/Conehead.cpp \
     zombie/General.cpp
 
 HEADERS += \
     core/AnimationUnit.h \
+    core/Bullet.h \
     core/GameCore.h \
     core/Global.h \
     core/ObjectTickable.h \
+    core/Sun.h \
     plant/Base.h \
+    plant/Peashooter.h \
     plant/Sunflower.h \
+    plant/Wallnut.h \
+    zombie/Base.h \
+    zombie/Conehead.h \
     zombie/General.h
 
 # Default rules for deployment.

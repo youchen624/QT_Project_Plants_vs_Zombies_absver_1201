@@ -1,19 +1,19 @@
-#include "plant/Sunflower.h"
+#include "plant/Wallnut.h"
 #include "core/GameCore.h"
-#include "core/Sun.h"
 
 using namespace PVZ::Plant;
 
-const QList<QPixmap>& Sunflower::frames() const {
+const QList<QPixmap>& Wallnut::frames() const {
     static const QList<QPixmap> data = []() {
         QList<QPixmap> list;
-        list.append(QPixmap(":/.resources/img/plant/sunflower.png"));
+        QPixmap img(":/.resources/img/plant/stalk.png");
+        list.append(img);
         return list;
     }();
     return data;
 }
 
-const QHash<QString, PVZ::Core::P2>& Sunflower::states() const {
+const QHash<QString, PVZ::Core::P2>& Wallnut::states() const {
     static const QHash<QString, PVZ::Core::P2> data = []() {
         QHash<QString, PVZ::Core::P2> hash;
         hash.insert("Idle", PVZ::Core::P2(0, 0));
@@ -22,12 +22,12 @@ const QHash<QString, PVZ::Core::P2>& Sunflower::states() const {
     return data;
 }
 
-Sunflower::Sunflower(Core::GameCore* core, int row, int col) :
-    Base(core), sun_ticks(0), row(row), col(col)
+Wallnut::Wallnut(Core::GameCore* core, int row, int col) :
+    Base(core), row(row), col(col)
 {
     zombieEatable = true;
     price = 50;
-    health = 300;
+    health = 4000;  // High health for defensive plant
 
     aniUnit = new Core::AnimationUnit(core, frames(), states());
     aniUnit->changeMotionState("Idle");
@@ -36,20 +36,14 @@ Sunflower::Sunflower(Core::GameCore* core, int row, int col) :
     aniUnit->setPosition(getGridX(col), getGridY(row));
 }
 
-Sunflower::~Sunflower() {
+Wallnut::~Wallnut() {
     delete aniUnit;
 }
 
-void Sunflower::tick(Core::GameState state) {
+void Wallnut::tick(Core::GameState state) {
     if (state != Core::GameState::Progressing) return;
     
     aniUnit->update();
-
-    // Produce sun
-    if (++sun_ticks >= SUN_SPAWN_TICKS) {
-        core->spawnSun(getGridX(col, 30), getGridY(row, 30), false);
-        qDebug() << "Sunflower produced sun";
-        
-        sun_ticks = 0;
-    }
+    
+    // Wallnut doesn't do anything special, just provides defense
 }
