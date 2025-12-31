@@ -1,5 +1,5 @@
-#ifndef SUNFLOWER_H
-#define SUNFLOWER_H
+#ifndef PEASHOOTER_H
+#define PEASHOOTER_H
 
 #include "plant/Base.h"
 #include "core/AnimationUnit.h"
@@ -7,16 +7,15 @@
 namespace PVZ {
 namespace Plant {
 
-class Sunflower : public Base
+class Peashooter : public Base
 {
     Q_OBJECT
 public:
-    static constexpr int SUN_VALUE = 25;
-    static constexpr int SUN_SPAWN_TICKS = 500;
+    static constexpr int SHOOT_INTERVAL_TICKS = 30;
 
 public:
-    Sunflower(Core::GameCore* core, int row, int col);
-    ~Sunflower();
+    Peashooter(Core::GameCore* core, int row, int col);
+    ~Peashooter();
 
     void tick(Core::GameState state) override;
 
@@ -26,11 +25,11 @@ protected:
     Core::AnimationUnit* aniUnit;
 
 private:
-    int sun_ticks;
+    int shoot_ticks;
     int row;
     int col;
 };
 
 }; };
 
-#endif // SUNFLOWER_H
+#endif // PEASHOOTER_H

@@ -5,6 +5,11 @@
 // #### #### || #### #### || #### ####
 
 #define TICK_PER_MS 50
+#define GRID_ROWS 5
+#define GRID_COLS 9
+#define GRID_START_X 250
+#define GRID_START_Y 80
+#define GRID_SIZE 100
 
 // #### #### || #### #### || #### ####
 
@@ -26,10 +31,15 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QDebug>
+#include <QLabel>
 
 #include "AnimationUnit.h"
 
-#include "plant/Sunflower.h"
+namespace PVZ {
+    namespace Plant { class Base; }
+    namespace Zombie { class Base; }
+    namespace Core { class Bullet; class Sun; }
+}
 
 namespace PVZ {
 namespace Core {
@@ -45,9 +55,6 @@ protected:
     QGraphicsPixmapItem graphic_main;
 
     static QPixmap pix;
-
-private:
-    // bool plantable;
 };
 
 
@@ -57,15 +64,13 @@ class GameCore : public QMainWindow
 
 public:
     explicit GameCore();
+    ~GameCore();
 
     void start() {
         state = GameState::Progressing;
         if (!m_timer.isActive()) {
             m_timer.start(TICK_PER_MS);
         }
-
-        // m_view->show();
-
     }
 
     void pause() {
@@ -73,15 +78,15 @@ public:
         m_timer.stop();
     }
 
-    Plant::Sunflower sflower;
+    void plantAt(QString type, int row, int col);
+    void spawnZombie(QString type, int row);
+    void spawnSun(qreal x, qreal y, bool fromSky = true);
+    void collectSun(Sun* sun);
+    
+    int getSunCount() const { return sun_count; }
+    void addSun(int amount) { sun_count += amount; updateSunDisplay(); }
+    void removeSun(int amount) { sun_count -= amount; updateSunDisplay(); }
 
-    void plant(QString type, int row, int column){};
-
-
-    // void addSceneItem(AnimationUnit aniUnit);
-    //
-
-// private:
     QGraphicsView   *m_view;
     QGraphicsScene  *m_scene;
 
@@ -89,8 +94,28 @@ public:
     GameState state;
 
 private slots:
+    void gameTick();
+
 signals:
     void coreTick();
+
+private:
+    void updateSunDisplay();
+    void checkCollisions();
+    void cleanupDeadObjects();
+    void spawnZombieWave();
+
+    int sun_count;
+    int tick_count;
+    int zombie_spawn_ticks;
+    
+    QLabel* sun_label;
+    
+    // Game objects
+    Plant::Base* plants[GRID_ROWS][GRID_COLS];
+    QList<Zombie::Base*> zombies;
+    QList<Bullet*> bullets;
+    QList<Sun*> suns;
 };
 
 }; };
