@@ -1,5 +1,8 @@
 #include "NormalZombie.h"
 
+// Zombie spawn position constant
+static const int SPAWN_X_POSITION = 900;  // Right edge of the game field
+
 NormalZombie::NormalZombie(int row, QObject *parent)
     : Zombie(parent)
     , attacking(false)
@@ -14,7 +17,7 @@ NormalZombie::NormalZombie(int row, QObject *parent)
     currentAttackCooldown = 0;
     
     // Set initial position at the right edge of the grid for the given row
-    position = QPoint(900, row);  // Start at x=900 (right side)
+    position = QPoint(SPAWN_X_POSITION, row);
 }
 
 NormalZombie::~NormalZombie()

@@ -3,6 +3,9 @@
 #include "Peashooter.h"
 #include "NormalZombie.h"
 
+// Game constants
+static const int CELL_WIDTH = 100;  // Width of each grid cell in pixels
+
 Game::Game(QObject *parent)
     : QObject(parent)
     , gameTimer(new QTimer(this))
@@ -211,15 +214,15 @@ void Game::checkCollisions()
                 Plant* plant = cell->getPlant();
                 if (plant && plant->isAlive()) {
                     // Simple collision: zombie reaches plant's column
-                    int plantX = col * 100;  // Assuming each cell is 100 pixels wide
+                    int plantX = col * CELL_WIDTH;
                     
-                    if (zombieX <= plantX + 100 && zombieX >= plantX) {
+                    if (zombieX <= plantX + CELL_WIDTH && zombieX >= plantX) {
                         // Zombie is at the plant's position
                         NormalZombie* normalZombie = qobject_cast<NormalZombie*>(zombie);
                         if (normalZombie) {
                             normalZombie->setAttacking(true);
                             // Attack the plant
-                            plant->takeDamage(zombie->getAttackDamage() / 30);  // Divide by tick rate
+                            plant->takeDamage(zombie->getAttackDamage() / tickRate);
                         }
                         break;  // Only attack one plant at a time
                     } else if (zombieX < plantX) {
