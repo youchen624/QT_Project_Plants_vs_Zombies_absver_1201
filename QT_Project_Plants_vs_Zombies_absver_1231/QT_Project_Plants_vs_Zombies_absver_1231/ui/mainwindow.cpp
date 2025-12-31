@@ -9,6 +9,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , game(new Game(this))
+    , gameScene(new GameScene(game, this))
+    , gameView(new QGraphicsView(gameScene, this))
     , statusLabel(new QLabel("Game Ready", this))
     , sunPointsLabel(new QLabel("Sun: 150", this))
     , tickLabel(new QLabel("Tick: 0", this))
@@ -55,11 +57,11 @@ void MainWindow::setupUI()
     statusLayout->addWidget(tickLabel);
     mainLayout->addLayout(statusLayout);
     
-    // Game area placeholder
-    QLabel* gameAreaLabel = new QLabel("Game Area (5 rows x 9 columns grid)", this);
-    gameAreaLabel->setStyleSheet("background-color: lightgreen; padding: 100px;");
-    gameAreaLabel->setAlignment(Qt::AlignCenter);
-    mainLayout->addWidget(gameAreaLabel, 1);
+    // Game area - use QGraphicsView instead of QLabel
+    gameView->setFixedSize(900, 500);
+    gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    gameView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mainLayout->addWidget(gameView, 1);
     
     // Control buttons
     QHBoxLayout* controlLayout = new QHBoxLayout();

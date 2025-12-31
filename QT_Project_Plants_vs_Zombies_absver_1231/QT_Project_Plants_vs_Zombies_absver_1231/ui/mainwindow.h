@@ -4,7 +4,9 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QPushButton>
+#include <QGraphicsView>
 #include "Game.h"
+#include "GameScene.h"
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +31,8 @@ private:
     void updateStatusLabel();
 
     Game* game;
+    GameScene* gameScene;
+    QGraphicsView* gameView;
     QLabel* statusLabel;
     QLabel* sunPointsLabel;
     QLabel* tickLabel;

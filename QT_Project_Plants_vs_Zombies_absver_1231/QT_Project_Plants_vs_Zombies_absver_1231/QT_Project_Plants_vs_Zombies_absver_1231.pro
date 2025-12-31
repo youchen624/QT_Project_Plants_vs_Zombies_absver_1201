@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     ui/mainwindow.cpp \
+    ui/GameScene.cpp \
     entities/Plant.cpp \
     entities/Zombie.cpp \
     game/PlantCell.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     ui/mainwindow.h \
+    ui/GameScene.h \
     entities/Plant.h \
     entities/Zombie.h \
     game/PlantCell.h \
