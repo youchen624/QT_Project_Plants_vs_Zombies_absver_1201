@@ -34,9 +34,10 @@ void NormalZombie::update(int tickCount)
     }
 
     if (attacking) {
-        // If attacking, don't move but attack on cooldown
+        // If attacking, don't move but manage attack cooldown
         if (currentAttackCooldown <= 0) {
-            attack();
+            // Ready to attack - emit signal
+            emit attackingPlant(position.y(), attackDamage);
             currentAttackCooldown = attackCooldown;
         } else {
             currentAttackCooldown--;
@@ -44,6 +45,8 @@ void NormalZombie::update(int tickCount)
     } else {
         // If not attacking, move forward
         move();
+        // Reset attack cooldown when starting to move again
+        currentAttackCooldown = 0;
     }
 
     // Check if reached the left edge (end of level)

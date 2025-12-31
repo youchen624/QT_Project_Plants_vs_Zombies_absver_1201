@@ -12,6 +12,7 @@ SOURCES += \
     main.cpp \
     ui/mainwindow.cpp \
     ui/GameScene.cpp \
+    ui/Projectile.cpp \
     entities/Plant.cpp \
     entities/Zombie.cpp \
     game/PlantCell.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 HEADERS += \
     ui/mainwindow.h \
     ui/GameScene.h \
+    ui/Projectile.h \
     entities/Plant.h \
     entities/Zombie.h \
     game/PlantCell.h \

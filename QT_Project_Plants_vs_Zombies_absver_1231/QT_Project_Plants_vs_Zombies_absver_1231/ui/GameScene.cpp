@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "Sunflower.h"
 #include "Peashooter.h"
+#include "Projectile.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QBrush>
@@ -286,18 +287,18 @@ void GameScene::onPeaShotVisual(int row, int col)
 {
     qDebug() << "Visual pea shot from (" << row << "," << col << ")";
     
-    // Create a temporary visual indicator for pea shooting
-    int x = col * cellWidth + cellWidth - 10;
-    int y = row * cellHeight + cellHeight / 2 - 5;
+    // Create animated projectile
+    int startX = col * cellWidth + cellWidth - 10;
+    int startY = row * cellHeight + cellHeight / 2 - 5;
     
-    // Create a green circle to represent pea
-    QGraphicsEllipseItem* peaItem = addEllipse(x, y, 10, 10,
-                                                QPen(Qt::darkGreen, 1),
-                                                QBrush(Qt::green));
+    Projectile* projectile = new Projectile(startX, startY, row, 20, this, this);
+    projectiles.append(projectile);
     
-    // Remove after 0.5 seconds
-    QTimer::singleShot(500, this, [this, peaItem]() {
-        removeItem(peaItem);
-        delete peaItem;
+    // Connect projectile destroyed signal for cleanup
+    connect(projectile, &Projectile::destroyed, this, [this, projectile]() {
+        projectiles.removeOne(projectile);
     });
+    
+    // Start projectile animation
+    projectile->start();
 }

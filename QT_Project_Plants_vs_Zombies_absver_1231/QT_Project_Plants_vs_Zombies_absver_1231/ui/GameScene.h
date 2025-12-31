@@ -49,6 +49,7 @@ private:
     // Map to track visual items
     QMap<Plant*, QGraphicsPixmapItem*> plantItems;
     QMap<Zombie*, QGraphicsPixmapItem*> zombieItems;
+    QList<Projectile*> projectiles;  // Active projectiles
     
     // Plant placement state
     QString selectedPlantType;

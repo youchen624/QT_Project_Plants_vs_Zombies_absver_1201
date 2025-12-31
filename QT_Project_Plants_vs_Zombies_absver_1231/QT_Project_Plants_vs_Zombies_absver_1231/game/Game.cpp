@@ -159,6 +159,12 @@ void Game::spawnZombie(Zombie* zombie)
         connect(zombie, &Zombie::died, this, &Game::onZombieDied);
         connect(zombie, &Zombie::reachedEnd, this, &Game::onZombieReachedEnd);
         
+        // Connect attack signal for NormalZombie
+        NormalZombie* normalZombie = qobject_cast<NormalZombie*>(zombie);
+        if (normalZombie) {
+            connect(normalZombie, &NormalZombie::attackingPlant, this, &Game::onZombieAttackingPlant);
+        }
+        
         emit zombieSpawned(zombie);
     }
 }
@@ -244,8 +250,8 @@ void Game::checkCollisions()
                         // Zombie is at the plant's position - attack it
                         if (normalZombie) {
                             normalZombie->setAttacking(true);
-                            // Attack the plant
-                            plant->takeDamage(zombie->getAttackDamage() / tickRate);
+                            // Zombie attacks on its own cooldown, not every tick
+                            // Damage is handled by the zombie's attack() method
                         }
                         break;  // Only attack one plant at a time
                     }
@@ -312,6 +318,37 @@ void Game::onPeaShot(int row, int damage)
             zombie->takeDamage(damage);
             qDebug() << "Zombie hit! Remaining health:" << zombie->getHealth();
             break; // Only hit one zombie per shot
+        }
+    }
+}
+
+void Game::onZombieAttackingPlant(int row, int damage)
+{
+    qDebug() << "Zombie attacking plant in row" << row << "with damage" << damage;
+    
+    // Find which zombie is attacking to get its position
+    NormalZombie* attackingZombie = qobject_cast<NormalZombie*>(QObject::sender());
+    if (!attackingZombie) {
+        return;
+    }
+    
+    int zombieX = attackingZombie->getPosition().x();
+    
+    // Find the plant that the zombie is attacking
+    for (int col = 0; col < gridCols; ++col) {
+        PlantCell* cell = grid[row][col];
+        if (cell && cell->isOccupied()) {
+            Plant* plant = cell->getPlant();
+            if (plant && plant->isAlive()) {
+                int plantX = col * CELL_WIDTH;
+                
+                // Check if zombie is at this plant's position
+                if (zombieX <= plantX + CELL_WIDTH && zombieX >= plantX) {
+                    plant->takeDamage(damage);
+                    qDebug() << "Plant hit! Remaining health:" << plant->getHealth();
+                    return;
+                }
+            }
         }
     }
 }

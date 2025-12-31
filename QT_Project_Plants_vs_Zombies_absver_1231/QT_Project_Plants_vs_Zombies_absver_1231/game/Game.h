@@ -62,6 +62,7 @@ private slots:
     void onZombieReachedEnd();    // Handle zombie reaching end
     void onSunProduced(int amount); // Handle sun production
     void onPeaShot(int row, int damage); // Handle pea shooting
+    void onZombieAttackingPlant(int row, int damage); // Handle zombie attacking plant
 
 private:
     void initializeGrid();         // Initialize the plant grid
