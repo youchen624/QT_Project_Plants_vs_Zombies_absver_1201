@@ -2,6 +2,7 @@
 #include "Sunflower.h"
 #include "Peashooter.h"
 #include "NormalZombie.h"
+#include <QDebug>
 
 // Game constants
 static const int CELL_WIDTH = 100;  // Width of each grid cell in pixels
@@ -105,19 +106,30 @@ PlantCell* Game::getCell(int row, int col)
 
 bool Game::placePlant(Plant* plant, int row, int col)
 {
+    qDebug() << "placePlant called for row" << row << "col" << col;
+    
     PlantCell* cell = getCell(row, col);
-    if (!cell || cell->isOccupied()) {
+    if (!cell) {
+        qDebug() << "Cell is null";
+        return false;
+    }
+    
+    if (cell->isOccupied()) {
+        qDebug() << "Cell is already occupied";
         return false;
     }
     
     // Check if we have enough sun points
+    qDebug() << "Sun points:" << sunPoints << "Plant cost:" << plant->getCost();
     if (sunPoints < plant->getCost()) {
+        qDebug() << "Not enough sun points";
         return false;
     }
     
     // Place the plant
     if (cell->placePlant(plant)) {
         spendSunPoints(plant->getCost());
+        qDebug() << "Plant placed successfully. Remaining sun points:" << sunPoints;
         
         // Connect signals based on plant type
         Sunflower* sunflower = qobject_cast<Sunflower*>(plant);
@@ -128,6 +140,7 @@ bool Game::placePlant(Plant* plant, int row, int col)
         return true;
     }
     
+    qDebug() << "Cell placePlant failed";
     return false;
 }
 

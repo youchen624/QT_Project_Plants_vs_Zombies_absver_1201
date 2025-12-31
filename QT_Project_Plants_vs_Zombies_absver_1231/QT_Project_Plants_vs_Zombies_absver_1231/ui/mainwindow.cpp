@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QWidget>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -128,23 +129,33 @@ void MainWindow::pauseButtonClicked()
 
 void MainWindow::testPlacePlants()
 {
+    qDebug() << "testPlacePlants called";
+    qDebug() << "Current sun points:" << game->getSunPoints();
+    
     // Test: Place some plants on the grid
     // Place a Sunflower at position (2, 1)
     Sunflower* sunflower = new Sunflower();
+    qDebug() << "Attempting to place Sunflower (cost:" << sunflower->getCost() << ") at (2, 1)";
     if (game->placePlant(sunflower, 2, 1)) {
         statusLabel->setText("Placed Sunflower at (2, 1)");
+        qDebug() << "Successfully placed Sunflower";
     } else {
         delete sunflower;
         statusLabel->setText("Failed to place Sunflower");
+        qDebug() << "Failed to place Sunflower";
     }
     
     // Place a Peashooter at position (2, 2)
     Peashooter* peashooter = new Peashooter();
+    qDebug() << "Attempting to place Peashooter (cost:" << peashooter->getCost() << ") at (2, 2)";
+    qDebug() << "Current sun points:" << game->getSunPoints();
     if (game->placePlant(peashooter, 2, 2)) {
         statusLabel->setText("Placed Peashooter at (2, 2)");
+        qDebug() << "Successfully placed Peashooter";
     } else {
         delete peashooter;
         statusLabel->setText("Failed to place Peashooter");
+        qDebug() << "Failed to place Peashooter";
     }
 }
 

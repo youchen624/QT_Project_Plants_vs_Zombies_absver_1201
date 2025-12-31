@@ -1,4 +1,5 @@
 #include "Plant.h"
+#include <QDebug>
 
 Plant::Plant(QObject *parent)
     : QObject(parent)
@@ -20,6 +21,11 @@ void Plant::setImage(const QString& path)
     imagePath = path;
     if (!path.isEmpty()) {
         image = QPixmap(path);
+        if (image.isNull()) {
+            qWarning() << "Failed to load plant image from:" << path;
+        } else {
+            qDebug() << "Loaded plant image from:" << path << "Size:" << image.size();
+        }
         emit imageChanged();
     }
 }

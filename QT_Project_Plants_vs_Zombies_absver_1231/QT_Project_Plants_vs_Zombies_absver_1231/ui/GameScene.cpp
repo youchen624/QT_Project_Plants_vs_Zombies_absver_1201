@@ -2,6 +2,7 @@
 #include <QGraphicsRectItem>
 #include <QBrush>
 #include <QPen>
+#include <QDebug>
 
 GameScene::GameScene(Game* game, QObject *parent)
     : QGraphicsScene(parent)
@@ -14,6 +15,21 @@ GameScene::GameScene(Game* game, QObject *parent)
     // Connect to game signals
     connect(game, &Game::tickUpdate, this, &GameScene::onTickUpdate);
     connect(game, &Game::zombieSpawned, this, &GameScene::onZombieSpawned);
+    
+    // Connect to all plant cells to get plant placement notifications
+    for (int row = 0; row < game->getGridRows(); ++row) {
+        for (int col = 0; col < game->getGridCols(); ++col) {
+            PlantCell* cell = game->getCell(row, col);
+            if (cell) {
+                connect(cell, &PlantCell::plantPlaced, this, [this](Plant*) {
+                    qDebug() << "Plant placed signal received, updating scene";
+                    updateScene();
+                });
+            }
+        }
+    }
+    
+    qDebug() << "GameScene initialized";
 }
 
 GameScene::~GameScene()
@@ -55,6 +71,8 @@ void GameScene::updateScene()
 
 void GameScene::drawPlants()
 {
+    qDebug() << "drawPlants called";
+    
     // Clear old plant items that are no longer valid
     QList<Plant*> deadPlants;
     for (auto it = plantItems.begin(); it != plantItems.end(); ++it) {
@@ -73,16 +91,19 @@ void GameScene::drawPlants()
     }
     
     // Draw all plants from the grid
+    int plantCount = 0;
     for (int row = 0; row < game->getGridRows(); ++row) {
         for (int col = 0; col < game->getGridCols(); ++col) {
             PlantCell* cell = game->getCell(row, col);
             if (cell && cell->isOccupied()) {
                 Plant* plant = cell->getPlant();
                 if (plant && plant->isAlive()) {
+                    plantCount++;
                     // Check if we already have an item for this plant
                     if (!plantItems.contains(plant)) {
                         int x = col * cellWidth + cellWidth / 2 - 32;
                         int y = row * cellHeight + cellHeight / 2 - 32;
+                        qDebug() << "Creating visual item for plant at grid (" << row << "," << col << ") pixel position (" << x << "," << y << ")";
                         QGraphicsPixmapItem* item = createEntityItem(plant->getImage(), x, y);
                         plantItems[plant] = item;
                     }
@@ -90,6 +111,7 @@ void GameScene::drawPlants()
             }
         }
     }
+    qDebug() << "Total plants in scene:" << plantCount << "Visual items:" << plantItems.size();
 }
 
 void GameScene::drawZombies()
@@ -134,8 +156,19 @@ void GameScene::drawZombies()
 
 QGraphicsPixmapItem* GameScene::createEntityItem(const QPixmap& image, int x, int y)
 {
+    if (image.isNull()) {
+        qWarning() << "Attempting to create item with null pixmap at position" << x << "," << y;
+        // Create a colored rectangle as a fallback
+        QPixmap fallback(64, 64);
+        fallback.fill(Qt::red);
+        QGraphicsPixmapItem* item = addPixmap(fallback);
+        item->setPos(x, y);
+        return item;
+    }
+    
     QGraphicsPixmapItem* item = addPixmap(image);
     item->setPos(x, y);
+    qDebug() << "Created entity item at" << x << "," << y << "with image size" << image.size();
     return item;
 }
 
