@@ -4,7 +4,7 @@ using namespace PVZ::Core;
 
 ObjectTickable::ObjectTickable(GameCore* core) : core(core), pause(false) {
     connect(core, &GameCore::coreTick, this, [this]() {
-        this->tick(core->state);
+        this->tick(this->core->state);
     });
 };
 

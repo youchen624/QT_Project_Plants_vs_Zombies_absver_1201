@@ -11,6 +11,7 @@ namespace Core {
     class GameCore;
 
     typedef struct P2 {
+        P2() : a(0), b(0) {};  // Default constructor
         P2(int a, int b) : a(a), b(b) {};
         bool out_range(int c) {
             return !((c >= a) || (c <= b));
