@@ -11,6 +11,9 @@ Sunflower::Sunflower(QObject *parent)
     maxHealth = 300;
     cost = 50;
     cooldown = 240;  // 8 seconds cooldown
+    
+    // Set default image
+    setImage(":/images/sunflower.png");
 }
 
 Sunflower::~Sunflower()

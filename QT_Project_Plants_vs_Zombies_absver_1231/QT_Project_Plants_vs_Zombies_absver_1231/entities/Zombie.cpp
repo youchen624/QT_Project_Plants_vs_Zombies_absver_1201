@@ -16,6 +16,15 @@ Zombie::~Zombie()
 {
 }
 
+void Zombie::setImage(const QString& path)
+{
+    imagePath = path;
+    if (!path.isEmpty()) {
+        image = QPixmap(path);
+        emit imageChanged();
+    }
+}
+
 void Zombie::takeDamage(int damage)
 {
     health -= damage;

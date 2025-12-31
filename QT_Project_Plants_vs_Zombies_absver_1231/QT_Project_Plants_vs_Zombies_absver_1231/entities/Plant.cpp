@@ -15,6 +15,15 @@ Plant::~Plant()
 {
 }
 
+void Plant::setImage(const QString& path)
+{
+    imagePath = path;
+    if (!path.isEmpty()) {
+        image = QPixmap(path);
+        emit imageChanged();
+    }
+}
+
 void Plant::takeDamage(int damage)
 {
     health -= damage;

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QString>
+#include <QPixmap>
 
 // Base class for all plants in the game
 class Plant : public QObject
@@ -22,9 +23,12 @@ public:
     int getCooldown() const { return cooldown; }
     bool isAlive() const { return health > 0; }
     QString getName() const { return name; }
+    QPixmap getImage() const { return image; }
+    QString getImagePath() const { return imagePath; }
 
     // Setters
     void setPosition(const QPoint& pos) { position = pos; }
+    void setImage(const QString& path);
     void takeDamage(int damage);
 
     // Virtual methods to be overridden by derived classes
@@ -35,6 +39,7 @@ public:
 signals:
     void died();                             // Emitted when plant dies
     void actionPerformed();                  // Emitted when plant performs action
+    void imageChanged();                     // Emitted when image changes
 
 protected:
     QString name;           // Plant name
@@ -44,6 +49,8 @@ protected:
     int cost;               // Sun cost to plant
     int cooldown;           // Cooldown time in ticks
     int currentCooldown;    // Current cooldown counter
+    QPixmap image;          // Plant image/sprite
+    QString imagePath;      // Path to image file
 };
 
 #endif // PLANT_H

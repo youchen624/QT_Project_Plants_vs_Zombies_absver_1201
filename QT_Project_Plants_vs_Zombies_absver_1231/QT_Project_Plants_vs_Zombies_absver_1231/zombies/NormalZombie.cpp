@@ -18,6 +18,9 @@ NormalZombie::NormalZombie(int row, QObject *parent)
     
     // Set initial position at the right edge of the grid for the given row
     position = QPoint(SPAWN_X_POSITION, row);
+    
+    // Set default image
+    setImage(":/images/zombie.png");
 }
 
 NormalZombie::~NormalZombie()

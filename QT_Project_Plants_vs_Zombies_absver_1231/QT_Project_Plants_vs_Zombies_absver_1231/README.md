@@ -4,10 +4,35 @@
 
 ## 專案結構
 
+```
+QT_Project_Plants_vs_Zombies_absver_1231/
+├── entities/              # 基礎實體類別
+│   ├── Plant.h/cpp       # 植物基類
+│   └── Zombie.h/cpp      # 殭屍基類
+├── plants/               # 植物實現
+│   ├── Sunflower.h/cpp   # 太陽花
+│   └── Peashooter.h/cpp  # 豌豆射手
+├── zombies/              # 殭屍實現
+│   └── NormalZombie.h/cpp # 普通殭屍
+├── game/                 # 遊戲邏輯
+│   ├── Game.h/cpp        # 遊戲控制器
+│   └── PlantCell.h/cpp   # 植物格子
+├── ui/                   # 用戶界面
+│   └── mainwindow.h/cpp  # 主窗口
+├── resources/            # 資源文件
+│   └── images/          # 圖像資源
+│       ├── sunflower.png
+│       ├── peashooter.png
+│       └── zombie.png
+├── main.cpp              # 程序入口
+├── resources.qrc         # Qt資源文件
+└── *.pro                 # 專案文件
+```
+
 ### 基礎類別 (Base Classes)
 
 #### 1. Plant (植物基類)
-**檔案**: `Plant.h`, `Plant.cpp`
+**檔案**: `entities/Plant.h`, `entities/Plant.cpp`
 
 植物的抽象基類，所有植物都繼承自此類。
 
@@ -15,6 +40,7 @@
 - 管理植物的生命值 (health)
 - 追蹤植物在網格中的位置 (position)
 - 管理種植成本 (cost) 和冷卻時間 (cooldown)
+- **圖像管理**: 支持PNG圖像加載和顯示
 - 提供虛擬方法供子類實現：
   - `update(int tickCount)`: 每個tick更新植物狀態
   - `performAction()`: 執行植物特定動作
@@ -23,9 +49,10 @@
 **信號 (Signals)**:
 - `died()`: 當植物死亡時發出
 - `actionPerformed()`: 當植物執行動作時發出
+- `imageChanged()`: 當圖像變更時發出
 
 #### 2. Zombie (殭屍基類)
-**檔案**: `Zombie.h`, `Zombie.cpp`
+**檔案**: `entities/Zombie.h`, `entities/Zombie.cpp`
 
 殭屍的抽象基類，所有殭屍都繼承自此類。
 
@@ -33,6 +60,7 @@
 - 管理殭屍的生命值 (health)
 - 追蹤殭屍的位置 (position)
 - 管理移動速度 (speed) 和攻擊傷害 (attackDamage)
+- **圖像管理**: 支持PNG圖像加載和顯示
 - 提供虛擬方法供子類實現：
   - `update(int tickCount)`: 每個tick更新殭屍狀態
   - `move()`: 移動殭屍
@@ -42,9 +70,10 @@
 **信號 (Signals)**:
 - `died()`: 當殭屍死亡時發出
 - `reachedEnd()`: 當殭屍到達終點時發出
+- `imageChanged()`: 當圖像變更時發出
 
 #### 3. PlantCell (植物格子類)
-**檔案**: `PlantCell.h`, `PlantCell.cpp`
+**檔案**: `game/PlantCell.h`, `game/PlantCell.cpp`
 
 代表遊戲網格中的一個格子，用於管理植物的放置。
 
@@ -138,6 +167,16 @@
 - 初始陽光: 150點
 - 通過太陽花產生更多陽光
 - 種植植物需要消耗陽光
+
+### 圖像系統
+- 所有遊戲物件都支持PNG圖像
+- 圖像通過Qt資源系統 (QRC) 管理
+- 每個實體都有 `getImage()` 和 `setImage()` 方法
+- 支持透明度 (RGBA)
+- 默認圖像路徑：
+  - 太陽花: `:/images/sunflower.png`
+  - 豌豆射手: `:/images/peashooter.png`
+  - 殭屍: `:/images/zombie.png`
 
 ### 碰撞檢測
 - 遊戲自動檢測殭屍與植物的碰撞

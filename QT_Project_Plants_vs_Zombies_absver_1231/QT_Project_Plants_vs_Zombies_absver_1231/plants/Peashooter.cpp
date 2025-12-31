@@ -12,6 +12,9 @@ Peashooter::Peashooter(QObject *parent)
     maxHealth = 300;
     cost = 100;
     cooldown = 240;  // 8 seconds cooldown
+    
+    // Set default image
+    setImage(":/images/peashooter.png");
 }
 
 Peashooter::~Peashooter()
