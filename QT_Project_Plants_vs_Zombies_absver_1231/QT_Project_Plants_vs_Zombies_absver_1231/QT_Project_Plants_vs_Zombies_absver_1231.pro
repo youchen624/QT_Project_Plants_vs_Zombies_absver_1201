@@ -10,10 +10,24 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    Plant.cpp \
+    Zombie.cpp \
+    PlantCell.cpp \
+    Sunflower.cpp \
+    Peashooter.cpp \
+    NormalZombie.cpp \
+    Game.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    Plant.h \
+    Zombie.h \
+    PlantCell.h \
+    Sunflower.h \
+    Peashooter.h \
+    NormalZombie.h \
+    Game.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
