@@ -1,5 +1,8 @@
 #include "GameScene.h"
+#include "Sunflower.h"
+#include "Peashooter.h"
 #include <QGraphicsRectItem>
+#include <QGraphicsSceneMouseEvent>
 #include <QBrush>
 #include <QPen>
 #include <QDebug>
@@ -9,6 +12,7 @@ GameScene::GameScene(Game* game, QObject *parent)
     , game(game)
     , cellWidth(100)
     , cellHeight(100)
+    , isPlacingPlant(false)
 {
     setupScene();
     
@@ -186,4 +190,64 @@ void GameScene::onTickUpdate(int tickCount)
 {
     // Update scene every tick
     updateScene();
+}
+
+void GameScene::setPlantToPlace(const QString& plantType)
+{
+    selectedPlantType = plantType;
+    isPlacingPlant = true;
+    qDebug() << "Plant placement mode activated for:" << plantType;
+}
+
+void GameScene::cancelPlantPlacement()
+{
+    selectedPlantType.clear();
+    isPlacingPlant = false;
+    qDebug() << "Plant placement mode cancelled";
+}
+
+void GameScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (isPlacingPlant && !selectedPlantType.isEmpty()) {
+        // Convert mouse position to grid coordinates
+        int col = pixelToCol(event->scenePos().x());
+        int row = pixelToRow(event->scenePos().y());
+        
+        qDebug() << "Clicked at grid position:" << row << "," << col;
+        
+        // Validate grid bounds
+        if (row >= 0 && row < game->getGridRows() && col >= 0 && col < game->getGridCols()) {
+            // Create the appropriate plant
+            Plant* plant = nullptr;
+            if (selectedPlantType == "Sunflower") {
+                plant = new Sunflower();
+            } else if (selectedPlantType == "Peashooter") {
+                plant = new Peashooter();
+            }
+            
+            if (plant) {
+                if (game->placePlant(plant, row, col)) {
+                    qDebug() << "Successfully placed" << selectedPlantType << "at (" << row << "," << col << ")";
+                    // Don't cancel placement mode - allow multiple plants
+                } else {
+                    qDebug() << "Failed to place" << selectedPlantType;
+                    delete plant;
+                }
+            }
+        } else {
+            qDebug() << "Click outside grid bounds";
+        }
+    }
+    
+    QGraphicsScene::mousePressEvent(event);
+}
+
+int GameScene::pixelToRow(int y) const
+{
+    return y / cellHeight;
+}
+
+int GameScene::pixelToCol(int x) const
+{
+    return x / cellWidth;
 }

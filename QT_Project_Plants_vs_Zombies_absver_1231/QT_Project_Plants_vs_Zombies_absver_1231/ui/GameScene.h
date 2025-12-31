@@ -17,6 +17,13 @@ public:
 
     void setupScene();
     void updateScene();
+    
+    // Plant selection for placement
+    void setPlantToPlace(const QString& plantType);
+    void cancelPlantPlacement();
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 private slots:
     void onPlantPlaced(int row, int col);
@@ -28,6 +35,10 @@ private:
     void drawPlants();
     void drawZombies();
     QGraphicsPixmapItem* createEntityItem(const QPixmap& image, int x, int y);
+    
+    // Convert pixel position to grid coordinates
+    int pixelToRow(int y) const;
+    int pixelToCol(int x) const;
 
     Game* game;
     int cellWidth;
@@ -36,6 +47,10 @@ private:
     // Map to track visual items
     QMap<Plant*, QGraphicsPixmapItem*> plantItems;
     QMap<Zombie*, QGraphicsPixmapItem*> zombieItems;
+    
+    // Plant placement state
+    QString selectedPlantType;
+    bool isPlacingPlant;
 };
 
 #endif // GAMESCENE_H

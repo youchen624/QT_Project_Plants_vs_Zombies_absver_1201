@@ -25,6 +25,8 @@ private slots:
     void pauseButtonClicked();
     void testPlacePlants();
     void testSpawnZombies();
+    void selectSunflower();
+    void selectPeashooter();
 
 private:
     void setupUI();
@@ -40,5 +42,7 @@ private:
     QPushButton* pauseButton;
     QPushButton* testPlantsButton;
     QPushButton* testZombiesButton;
+    QPushButton* sunflowerButton;
+    QPushButton* peashooterButton;
 };
 #endif // MAINWINDOW_H

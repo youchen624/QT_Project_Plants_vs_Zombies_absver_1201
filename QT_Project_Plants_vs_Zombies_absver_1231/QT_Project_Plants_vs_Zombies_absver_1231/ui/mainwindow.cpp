@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     , pauseButton(new QPushButton("Pause", this))
     , testPlantsButton(new QPushButton("Test: Place Plants", this))
     , testZombiesButton(new QPushButton("Test: Spawn Zombies", this))
+    , sunflowerButton(new QPushButton("🌻 Sunflower (50)", this))
+    , peashooterButton(new QPushButton("🌱 Peashooter (100)", this))
 {
     setupUI();
     
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pauseButton, &QPushButton::clicked, this, &MainWindow::pauseButtonClicked);
     connect(testPlantsButton, &QPushButton::clicked, this, &MainWindow::testPlacePlants);
     connect(testZombiesButton, &QPushButton::clicked, this, &MainWindow::testSpawnZombies);
+    connect(sunflowerButton, &QPushButton::clicked, this, &MainWindow::selectSunflower);
+    connect(peashooterButton, &QPushButton::clicked, this, &MainWindow::selectPeashooter);
     
     // Set window properties
     setWindowTitle("Plants vs. Zombies - QT Project");
@@ -58,6 +62,15 @@ void MainWindow::setupUI()
     statusLayout->addWidget(tickLabel);
     mainLayout->addLayout(statusLayout);
     
+    // Plant selection area
+    QHBoxLayout* plantLayout = new QHBoxLayout();
+    QLabel* plantLabel = new QLabel("Select Plant to Place:", this);
+    plantLayout->addWidget(plantLabel);
+    plantLayout->addWidget(sunflowerButton);
+    plantLayout->addWidget(peashooterButton);
+    plantLayout->addStretch();
+    mainLayout->addLayout(plantLayout);
+    
     // Game area - use QGraphicsView instead of QLabel
     gameView->setFixedSize(900, 500);
     gameView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -77,6 +90,8 @@ void MainWindow::setupUI()
     pauseButton->setEnabled(false);
     testPlantsButton->setEnabled(false);
     testZombiesButton->setEnabled(false);
+    sunflowerButton->setEnabled(false);
+    peashooterButton->setEnabled(false);
 }
 
 void MainWindow::onGameStarted()
@@ -86,6 +101,8 @@ void MainWindow::onGameStarted()
     pauseButton->setEnabled(true);
     testPlantsButton->setEnabled(true);
     testZombiesButton->setEnabled(true);
+    sunflowerButton->setEnabled(true);
+    peashooterButton->setEnabled(true);
     updateStatusLabel();
 }
 
@@ -96,6 +113,8 @@ void MainWindow::onGameStopped()
     pauseButton->setEnabled(false);
     testPlantsButton->setEnabled(false);
     testZombiesButton->setEnabled(false);
+    sunflowerButton->setEnabled(false);
+    peashooterButton->setEnabled(false);
     updateStatusLabel();
 }
 
@@ -174,4 +193,18 @@ void MainWindow::updateStatusLabel()
                         .arg(game->getGridRows())
                         .arg(game->getGridCols());
     statusLabel->setText(status);
+}
+
+void MainWindow::selectSunflower()
+{
+    gameScene->setPlantToPlace("Sunflower");
+    statusLabel->setText("Click on grid to place Sunflower (Cost: 50)");
+    qDebug() << "Sunflower selected for placement";
+}
+
+void MainWindow::selectPeashooter()
+{
+    gameScene->setPlantToPlace("Peashooter");
+    statusLabel->setText("Click on grid to place Peashooter (Cost: 100)");
+    qDebug() << "Peashooter selected for placement";
 }

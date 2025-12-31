@@ -220,6 +220,12 @@ void Game::checkCollisions()
         int zombieRow = zombie->getPosition().y();
         int zombieX = zombie->getPosition().x();
         
+        // Assume zombie is not attacking until we find a plant
+        NormalZombie* normalZombie = qobject_cast<NormalZombie*>(zombie);
+        if (normalZombie) {
+            normalZombie->setAttacking(false);
+        }
+        
         // Check each column in the zombie's row
         for (int col = 0; col < gridCols; ++col) {
             PlantCell* cell = grid[zombieRow][col];
@@ -230,20 +236,13 @@ void Game::checkCollisions()
                     int plantX = col * CELL_WIDTH;
                     
                     if (zombieX <= plantX + CELL_WIDTH && zombieX >= plantX) {
-                        // Zombie is at the plant's position
-                        NormalZombie* normalZombie = qobject_cast<NormalZombie*>(zombie);
+                        // Zombie is at the plant's position - attack it
                         if (normalZombie) {
                             normalZombie->setAttacking(true);
                             // Attack the plant
                             plant->takeDamage(zombie->getAttackDamage() / tickRate);
                         }
                         break;  // Only attack one plant at a time
-                    } else if (zombieX < plantX) {
-                        // Passed this plant, stop attacking
-                        NormalZombie* normalZombie = qobject_cast<NormalZombie*>(zombie);
-                        if (normalZombie) {
-                            normalZombie->setAttacking(false);
-                        }
                     }
                 }
             }
