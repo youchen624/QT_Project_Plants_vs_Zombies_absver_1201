@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QRandomGenerator>
 
 using namespace PVZ::Core;
 
@@ -127,7 +128,7 @@ void GameCore::gameTick() {
     
     // Spawn sun from sky occasionally
     if (tick_count % 300 == 0) {
-        qreal x = 300 + (qrand() % 800);
+        qreal x = QRandomGenerator::global()->bounded(800) + 300;
         spawnSun(x, 0, true);
     }
     
@@ -299,8 +300,8 @@ void GameCore::spawnZombieWave() {
     if (numZombies > 5) numZombies = 5;
     
     for (int i = 0; i < numZombies; i++) {
-        int row = qrand() % GRID_ROWS;
-        QString type = (qrand() % 3 == 0) ? "conehead" : "general";
+        int row = QRandomGenerator::global()->bounded(GRID_ROWS);
+        QString type = (QRandomGenerator::global()->bounded(3) == 0) ? "conehead" : "general";
         spawnZombie(type, row);
     }
 }
@@ -318,7 +319,8 @@ Ground::~Ground() {
 
 void GameCore::mousePressEvent(QMouseEvent* event) {
     // Convert window coordinates to scene coordinates
-    QPointF scenePos = m_view->mapToScene(event->pos());
+    QPoint viewPos = m_view->mapFromParent(event->pos());
+    QPointF scenePos = m_view->mapToScene(viewPos);
     
     // Check if clicked on a sun
     for (Sun* sun : suns) {
