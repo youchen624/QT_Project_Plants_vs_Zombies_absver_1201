@@ -9,23 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    BasePlant.cpp \
-    BaseZombie.cpp \
-    GameCore.cpp \
-    ItemPositionable.cpp \
-    ItemRenderable.cpp \
-    ItemTickable.cpp \
+    core/AnimationUnit.cpp \
+    core/GameCore.cpp \
+    core/Global.cpp \
+    core/ObjectTickable.cpp \
     main.cpp \
-    widget.cpp
+    plant/Base.cpp \
+    plant/Sunflower.cpp \
+    zombie/General.cpp
 
 HEADERS += \
-    BasePlant.h \
-    BaseZombie.h \
-    GameCore.h \
-    ItemPositionable.h \
-    ItemRenderable.h \
-    ItemTickable.h \
-    widget.h
+    core/AnimationUnit.h \
+    core/GameCore.h \
+    core/Global.h \
+    core/ObjectTickable.h \
+    plant/Base.h \
+    plant/Sunflower.h \
+    zombie/General.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -34,3 +34,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES +=

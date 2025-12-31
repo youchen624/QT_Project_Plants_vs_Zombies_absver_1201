@@ -1,1 +1,8 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/img/plant/sunflower">
+        <file>.resources/img/plant/sunflower_f.png</file>
+    </qresource>
+    <qresource prefix="/img/background/1">
+        <file>.resources/img/background/background.png</file>
+    </qresource>
+</RCC>
