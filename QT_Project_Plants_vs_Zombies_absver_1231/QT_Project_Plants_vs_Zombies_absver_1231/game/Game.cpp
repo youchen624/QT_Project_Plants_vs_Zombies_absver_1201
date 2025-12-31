@@ -137,6 +137,11 @@ bool Game::placePlant(Plant* plant, int row, int col)
             connect(sunflower, &Sunflower::sunProduced, this, &Game::onSunProduced);
         }
         
+        Peashooter* peashooter = qobject_cast<Peashooter*>(plant);
+        if (peashooter) {
+            connect(peashooter, &Peashooter::peaShot, this, &Game::onPeaShot);
+        }
+        
         return true;
     }
     
@@ -279,4 +284,34 @@ void Game::onZombieReachedEnd()
 void Game::onSunProduced(int amount)
 {
     addSunPoints(amount);
+    qDebug() << "Sun produced! Amount:" << amount << "New total:" << sunPoints;
+    
+    // Find which sunflower produced the sun for visual feedback
+    Sunflower* sender = qobject_cast<Sunflower*>(QObject::sender());
+    if (sender) {
+        QPoint pos = sender->getPosition();
+        emit sunProducedVisual(pos.y(), pos.x(), amount);
+        qDebug() << "Sun produced at position:" << pos;
+    }
+}
+
+void Game::onPeaShot(int row, int damage)
+{
+    qDebug() << "Pea shot in row" << row << "with damage" << damage;
+    
+    // Find which peashooter shot for visual feedback
+    Peashooter* sender = qobject_cast<Peashooter*>(QObject::sender());
+    if (sender) {
+        QPoint pos = sender->getPosition();
+        emit peaShotVisual(pos.y(), pos.x());
+    }
+    
+    // Find the first zombie in this row and damage it
+    for (Zombie* zombie : zombies) {
+        if (zombie && zombie->isAlive() && zombie->getPosition().y() == row) {
+            zombie->takeDamage(damage);
+            qDebug() << "Zombie hit! Remaining health:" << zombie->getHealth();
+            break; // Only hit one zombie per shot
+        }
+    }
 }

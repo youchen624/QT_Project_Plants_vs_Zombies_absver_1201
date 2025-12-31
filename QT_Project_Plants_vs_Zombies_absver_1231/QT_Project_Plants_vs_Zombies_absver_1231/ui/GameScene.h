@@ -29,6 +29,8 @@ private slots:
     void onPlantPlaced(int row, int col);
     void onZombieSpawned(Zombie* zombie);
     void onTickUpdate(int tickCount);
+    void onSunProducedVisual(int row, int col, int amount);
+    void onPeaShotVisual(int row, int col);
 
 private:
     void drawGrid();

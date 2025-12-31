@@ -6,6 +6,7 @@
 #include <QBrush>
 #include <QPen>
 #include <QDebug>
+#include <QTimer>
 
 GameScene::GameScene(Game* game, QObject *parent)
     : QGraphicsScene(parent)
@@ -19,6 +20,8 @@ GameScene::GameScene(Game* game, QObject *parent)
     // Connect to game signals
     connect(game, &Game::tickUpdate, this, &GameScene::onTickUpdate);
     connect(game, &Game::zombieSpawned, this, &GameScene::onZombieSpawned);
+    connect(game, &Game::sunProducedVisual, this, &GameScene::onSunProducedVisual);
+    connect(game, &Game::peaShotVisual, this, &GameScene::onPeaShotVisual);
     
     // Connect to all plant cells to get plant placement notifications
     for (int row = 0; row < game->getGridRows(); ++row) {
@@ -250,4 +253,51 @@ int GameScene::pixelToRow(int y) const
 int GameScene::pixelToCol(int x) const
 {
     return x / cellWidth;
+}
+
+void GameScene::onSunProducedVisual(int row, int col, int amount)
+{
+    qDebug() << "Visual sun produced at (" << row << "," << col << ") amount:" << amount;
+    
+    // Create a temporary visual indicator for sun production
+    int x = col * cellWidth + cellWidth / 2 - 15;
+    int y = row * cellHeight + cellHeight / 2 - 15;
+    
+    // Create a yellow circle to represent sun
+    QGraphicsEllipseItem* sunItem = addEllipse(x, y, 30, 30, 
+                                                QPen(QColor(255, 165, 0), 2), 
+                                                QBrush(QColor(255, 220, 0)));
+    
+    // Add text showing amount
+    QGraphicsTextItem* textItem = addText(QString::number(amount));
+    textItem->setPos(x + 8, y + 5);
+    textItem->setDefaultTextColor(Qt::black);
+    
+    // Remove after 1 second (using QTimer)
+    QTimer::singleShot(1000, this, [this, sunItem, textItem]() {
+        removeItem(sunItem);
+        removeItem(textItem);
+        delete sunItem;
+        delete textItem;
+    });
+}
+
+void GameScene::onPeaShotVisual(int row, int col)
+{
+    qDebug() << "Visual pea shot from (" << row << "," << col << ")";
+    
+    // Create a temporary visual indicator for pea shooting
+    int x = col * cellWidth + cellWidth - 10;
+    int y = row * cellHeight + cellHeight / 2 - 5;
+    
+    // Create a green circle to represent pea
+    QGraphicsEllipseItem* peaItem = addEllipse(x, y, 10, 10,
+                                                QPen(Qt::darkGreen, 1),
+                                                QBrush(Qt::green));
+    
+    // Remove after 0.5 seconds
+    QTimer::singleShot(500, this, [this, peaItem]() {
+        removeItem(peaItem);
+        delete peaItem;
+    });
 }

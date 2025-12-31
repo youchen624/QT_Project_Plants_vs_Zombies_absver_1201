@@ -50,6 +50,8 @@ signals:
     void gameStopped();
     void gameOver(bool won);
     void sunPointsChanged(int newAmount);
+    void sunProducedVisual(int row, int col, int amount); // Visual sun production
+    void peaShotVisual(int row, int col); // Visual pea shooting
     void tickUpdate(int tickCount);
     void zombieSpawned(Zombie* zombie);
     void zombieDied(Zombie* zombie);
@@ -59,6 +61,7 @@ private slots:
     void onZombieDied();          // Handle zombie death
     void onZombieReachedEnd();    // Handle zombie reaching end
     void onSunProduced(int amount); // Handle sun production
+    void onPeaShot(int row, int damage); // Handle pea shooting
 
 private:
     void initializeGrid();         // Initialize the plant grid
