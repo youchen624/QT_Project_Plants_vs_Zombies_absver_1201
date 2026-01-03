@@ -1,3 +1,5 @@
+*.idx
+build/**
 # C++ objects and libs
 *.slo
 *.lo
@@ -52,3 +54,5 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+_codeql_detected_source_root
+game_ui_preview.png

@@ -10,10 +10,33 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    ui/mainwindow.cpp \
+    ui/GameScene.cpp \
+    ui/Projectile.cpp \
+    entities/Plant.cpp \
+    entities/Zombie.cpp \
+    game/PlantCell.cpp \
+    plants/Sunflower.cpp \
+    plants/Peashooter.cpp \
+    zombies/NormalZombie.cpp \
+    game/Game.cpp
 
 HEADERS += \
-    mainwindow.h
+    ui/mainwindow.h \
+    ui/GameScene.h \
+    ui/Projectile.h \
+    entities/Plant.h \
+    entities/Zombie.h \
+    game/PlantCell.h \
+    plants/Sunflower.h \
+    plants/Peashooter.h \
+    zombies/NormalZombie.h \
+    game/Game.h
+
+INCLUDEPATH += entities plants zombies game ui
+
+RESOURCES += \
+    resources.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
