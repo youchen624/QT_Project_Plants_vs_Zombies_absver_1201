@@ -1,0 +1,143 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "name": "Level 1 - Tutorial",
+      "description": "Learn the basics of defending your garden",
+      "waves": [
+        {
+          "wave": 1,
+          "zombies": [
+            {"type": "normal", "count": 5, "spawnInterval": 3.0}
+          ]
+        },
+        {
+          "wave": 2,
+          "zombies": [
+            {"type": "normal", "count": 7, "spawnInterval": 2.5}
+          ]
+        }
+      ],
+      "initialSun": 150,
+      "sunFallInterval": 10.0,
+      "availablePlants": ["sunflower", "shooter", "wall"]
+    },
+    {
+      "id": 2,
+      "name": "Level 2 - Getting Harder",
+      "description": "More zombies are coming!",
+      "waves": [
+        {
+          "wave": 1,
+          "zombies": [
+            {"type": "normal", "count": 5, "spawnInterval": 3.0},
+            {"type": "fast", "count": 2, "spawnInterval": 5.0}
+          ]
+        },
+        {
+          "wave": 2,
+          "zombies": [
+            {"type": "normal", "count": 8, "spawnInterval": 2.0},
+            {"type": "fast", "count": 3, "spawnInterval": 4.0}
+          ]
+        }
+      ],
+      "initialSun": 125,
+      "sunFallInterval": 12.0,
+      "availablePlants": ["sunflower", "shooter", "wall", "iceshooter"]
+    },
+    {
+      "id": 3,
+      "name": "Level 3 - Armored Invasion",
+      "description": "Armored zombies have arrived!",
+      "waves": [
+        {
+          "wave": 1,
+          "zombies": [
+            {"type": "normal", "count": 6, "spawnInterval": 2.5},
+            {"type": "fast", "count": 3, "spawnInterval": 4.0},
+            {"type": "armored", "count": 1, "spawnInterval": 8.0}
+          ]
+        },
+        {
+          "wave": 2,
+          "zombies": [
+            {"type": "normal", "count": 10, "spawnInterval": 2.0},
+            {"type": "fast", "count": 5, "spawnInterval": 3.0},
+            {"type": "armored", "count": 3, "spawnInterval": 6.0}
+          ]
+        }
+      ],
+      "initialSun": 100,
+      "sunFallInterval": 15.0,
+      "availablePlants": ["sunflower", "shooter", "wall", "iceshooter"]
+    },
+    {
+      "id": 4,
+      "name": "Level 4 - Night Battle",
+      "description": "Defend your garden at night with limited sun!",
+      "waves": [
+        {
+          "wave": 1,
+          "zombies": [
+            {"type": "normal", "count": 8, "spawnInterval": 2.0},
+            {"type": "fast", "count": 4, "spawnInterval": 3.0}
+          ]
+        },
+        {
+          "wave": 2,
+          "zombies": [
+            {"type": "normal", "count": 10, "spawnInterval": 1.8},
+            {"type": "fast", "count": 6, "spawnInterval": 2.5},
+            {"type": "armored", "count": 2, "spawnInterval": 5.0}
+          ]
+        },
+        {
+          "wave": 3,
+          "zombies": [
+            {"type": "normal", "count": 12, "spawnInterval": 1.5},
+            {"type": "fast", "count": 8, "spawnInterval": 2.0},
+            {"type": "armored", "count": 4, "spawnInterval": 4.0}
+          ]
+        }
+      ],
+      "initialSun": 75,
+      "sunFallInterval": 18.0,
+      "availablePlants": ["sunflower", "shooter", "wall", "iceshooter", "repeater"]
+    },
+    {
+      "id": 5,
+      "name": "Level 5 - Final Stand",
+      "description": "The ultimate zombie horde awaits!",
+      "waves": [
+        {
+          "wave": 1,
+          "zombies": [
+            {"type": "normal", "count": 10, "spawnInterval": 1.5},
+            {"type": "fast", "count": 6, "spawnInterval": 2.0},
+            {"type": "armored", "count": 3, "spawnInterval": 4.0}
+          ]
+        },
+        {
+          "wave": 2,
+          "zombies": [
+            {"type": "normal", "count": 15, "spawnInterval": 1.2},
+            {"type": "fast", "count": 10, "spawnInterval": 1.8},
+            {"type": "armored", "count": 5, "spawnInterval": 3.0}
+          ]
+        },
+        {
+          "wave": 3,
+          "zombies": [
+            {"type": "normal", "count": 20, "spawnInterval": 1.0},
+            {"type": "fast", "count": 12, "spawnInterval": 1.5},
+            {"type": "armored", "count": 8, "spawnInterval": 2.5}
+          ]
+        }
+      ],
+      "initialSun": 50,
+      "sunFallInterval": 20.0,
+      "availablePlants": ["sunflower", "shooter", "wall", "iceshooter", "repeater"]
+    }
+  ]
+}
