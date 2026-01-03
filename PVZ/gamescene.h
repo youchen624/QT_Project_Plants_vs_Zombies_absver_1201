@@ -98,6 +98,7 @@ private:
     void hidePauseMenu();
     void hideOptionsMenu();
     void cycleGameSpeed(); // Cycle through 1x, 3x, 5x speeds
+    void submitScoreToLeaderboard(bool isWin);
     
     bool canPlacePlant(int row, int col) const;
     bool canUpgradePlant(int row, int col, PlantType upgradeType) const;
@@ -120,6 +121,12 @@ private:
     bool m_isEndlessMode;
     float m_gameSpeedMultiplier; // Game speed control: 1.0x, 3.0x, 5.0x
     bool m_autoCollectSun; // Auto-collect sun setting
+    
+    // Game statistics for leaderboard
+    int m_zombiesKilled;
+    int m_plantsPlaced;
+    int m_totalSunCollected;
+    qint64 m_gameStartTime;
 
     // Timers
     QTimer *m_gameTimer;

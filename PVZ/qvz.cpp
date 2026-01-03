@@ -1,4 +1,5 @@
 #include "qvz.h"
+#include "leaderboarddialog.h"
 #include <QApplication>
 
 QVZ::QVZ(QWidget *parent)
@@ -15,6 +16,7 @@ QVZ::QVZ(QWidget *parent)
     // Create main menu
     m_mainMenu = new MainMenu(this);
     connect(m_mainMenu, &MainMenu::selectLevel, this, &QVZ::showLevelSelect);
+    connect(m_mainMenu, &MainMenu::showLeaderboard, this, &QVZ::showLeaderboard);
     connect(m_mainMenu, &MainMenu::exitGame, this, &QVZ::exitApplication);
 
     // Create level select screen
@@ -94,6 +96,12 @@ void QVZ::showOptions()
             "- 自動收集陽光\n"
             "- 倍速 (1x, 3x, 5x)");
     }
+}
+
+void QVZ::showLeaderboard()
+{
+    LeaderboardDialog dialog(this);
+    dialog.exec();
 }
 
 void QVZ::exitApplication()

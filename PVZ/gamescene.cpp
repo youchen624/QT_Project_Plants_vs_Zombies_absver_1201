@@ -1,4 +1,6 @@
 #include "gamescene.h"
+#include "leaderboardmanager.h"
+#include "playernamedialog.h"
 #include <QDateTime>
 #include <QDebug>
 #include <cmath>
@@ -26,6 +28,10 @@ GameScene::GameScene(QWidget *parent)
     , m_isEndlessMode(false)
     , m_gameSpeedMultiplier(1.0f)
     , m_autoCollectSun(false)
+    , m_zombiesKilled(0)
+    , m_plantsPlaced(0)
+    , m_totalSunCollected(0)
+    , m_gameStartTime(0)
     , m_gameTimer(nullptr)
     , m_spawnTimer(nullptr)
     , m_sunTimer(nullptr)
@@ -95,6 +101,13 @@ void GameScene::startGame(int levelId)
     m_isRunning = true;
     m_isPaused = false;
     m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+    m_gameStartTime = QDateTime::currentSecsSinceEpoch();
+    
+    // Reset statistics
+    m_zombiesKilled = 0;
+    m_plantsPlaced = 0;
+    m_totalSunCollected = 0;
+    
     m_gameTimer->start(16); // ~60 FPS
     m_sunTimer->start(8000); // Spawn sun from sky every 8 seconds
     
@@ -199,6 +212,7 @@ void GameScene::resetGame()
 void GameScene::addSun(int amount)
 {
     m_sunAmount += amount;
+    m_totalSunCollected += amount; // Track total sun collected
     emit sunAmountChanged(m_sunAmount);
 }
 
@@ -322,8 +336,9 @@ void GameScene::updateEntities(float deltaTime)
         }), m_plants.end());
 
     m_zombies.erase(std::remove_if(m_zombies.begin(), m_zombies.end(),
-        [](Zombie *z) {
+        [this](Zombie *z) {
             if (z->isMarkedForDeletion()) {
+                m_zombiesKilled++; // Track zombie kills
                 delete z;
                 return true;
             }
@@ -539,6 +554,7 @@ void GameScene::checkWinLoseConditions()
             m_isRunning = false;
             m_gameTimer->stop();
             m_spawnTimer->stop();
+            submitScoreToLeaderboard(false); // Submit loss score
             emit gameLost();
             return;
         }
@@ -567,6 +583,7 @@ void GameScene::checkWinLoseConditions()
             m_isRunning = false;
             m_gameTimer->stop();
             m_spawnTimer->stop();
+            submitScoreToLeaderboard(true); // Submit win score
             emit gameWon();
         } else {
             // Start next wave
@@ -584,6 +601,31 @@ void GameScene::checkWinLoseConditions()
                 m_spawnTimer->start(3000); // Normal spawn
             }
         }
+    }
+}
+
+void GameScene::submitScoreToLeaderboard(bool isWin)
+{
+    // Calculate play time
+    qint64 playTime = QDateTime::currentSecsSinceEpoch() - m_gameStartTime;
+    
+    // Show player name dialog
+    PlayerNameDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        PlayerScore score;
+        score.playerName = dialog.getPlayerName();
+        score.levelId = m_currentLevel;
+        score.wavesSurvived = m_currentWave;
+        score.zombiesKilled = m_zombiesKilled;
+        score.plantsPlaced = m_plantsPlaced;
+        score.totalSunCollected = m_totalSunCollected;
+        score.playTimeSeconds = playTime;
+        score.date = QDateTime::currentDateTime();
+        score.isWin = isWin;
+        
+        // Add to leaderboard
+        LeaderboardManager::instance().addScore(score);
+        qDebug() << "Score submitted:" << score.playerName << "Score:" << score.calculateScore();
     }
 }
 
@@ -1259,6 +1301,7 @@ void GameScene::placePlant(int row, int col)
         plant->setCol(col);
         m_plants.append(plant);
         m_grid[row][col] = plant;
+        m_plantsPlaced++; // Track plant placements
         
         // Start cooldown on the card - different cooldowns for different plants
         if (m_selectedCard) {
