@@ -19,6 +19,10 @@ NC='\033[0m' # No Color
 TESTS_PASSED=0
 TESTS_FAILED=0
 
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LOG_FILE="$SCRIPT_DIR/pvz_server_test.log"
+
 # Function to test API endpoint
 test_endpoint() {
     local test_name="$1"
@@ -55,15 +59,23 @@ test_endpoint() {
 
 # Start test server
 echo "Starting mock server..."
-cd "$(dirname "$0")"
-python3 mock_leaderboard_server.py > /tmp/pvz_server.log 2>&1 &
+cd "$SCRIPT_DIR"
+
+# Check if log directory is writable
+if [ ! -w "$SCRIPT_DIR" ]; then
+    echo -e "${YELLOW}Warning: Cannot write to $SCRIPT_DIR, using current directory${NC}"
+    LOG_FILE="./pvz_server_test.log"
+fi
+
+python3 mock_leaderboard_server.py > "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 echo "Server started with PID: $SERVER_PID"
+echo "Log file: $LOG_FILE"
 sleep 2
 
 # Verify server is running
 if ! ps -p $SERVER_PID > /dev/null; then
-    echo -e "${RED}Failed to start server. Check /tmp/pvz_server.log${NC}"
+    echo -e "${RED}Failed to start server. Check $LOG_FILE${NC}"
     exit 1
 fi
 

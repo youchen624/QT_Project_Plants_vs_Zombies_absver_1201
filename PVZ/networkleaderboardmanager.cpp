@@ -203,21 +203,44 @@ void NetworkLeaderboardManager::onSslErrors(const QList<QSslError> &errors)
         qDebug() << "  -" << error.errorString();
     }
     
-    // For development/testing, we might want to ignore SSL errors
-    // In production, this should be handled more carefully
-    reply->ignoreSslErrors();
+    // WARNING: In production, DO NOT ignore SSL errors blindly.
+    // This is only for development/testing with self-signed certificates.
+    // In production:
+    // 1. Validate the certificate is the expected one
+    // 2. Check specific error types (e.g., self-signed certificates)
+    // 3. Prompt user for confirmation before ignoring errors
+    // 4. Use proper CA-signed certificates
+    
+    // For now, only ignore for localhost/development
+    QUrl url = reply->url();
+    if (url.host() == "localhost" || url.host() == "127.0.0.1") {
+        qDebug() << "Ignoring SSL errors for localhost";
+        reply->ignoreSslErrors();
+    } else {
+        qDebug() << "SSL errors NOT ignored for production server";
+        emit networkError("SSL certificate verification failed");
+    }
 }
 
 QString NetworkLeaderboardManager::calculateChecksum(const QJsonObject &data) const
 {
-    // Create a simple checksum for data validation
-    // In production, use a proper HMAC with server-shared secret
+    // Create a basic checksum for data validation
+    // NOTE: This is NOT secure for production use!
+    // In production:
+    // 1. Use server-side HMAC validation with a secret key that's not in the client
+    // 2. Implement proper authentication (OAuth, JWT, API keys)
+    // 3. Server must validate all scores for reasonableness
+    // 4. Add timestamp and nonce to prevent replay attacks
+    // 
+    // This client-side checksum is only a deterrent, not real security.
+    
     QJsonDocument doc(data);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
     
     QCryptographicHash hash(QCryptographicHash::Sha256);
     hash.addData(jsonData);
-    hash.addData("PVZ_SECRET_SALT"); // Simple salt for basic validation
+    // Using a weak "salt" here - in production, server should verify with HMAC
+    hash.addData("PVZ_CLIENT_VALIDATION");
     
     return QString(hash.result().toHex());
 }

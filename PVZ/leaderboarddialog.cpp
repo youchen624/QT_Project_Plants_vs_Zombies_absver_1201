@@ -154,13 +154,18 @@ void LeaderboardDialog::setupUI()
     
     tabLayout->addWidget(m_tableWidget);
     
-    // Add the tab content to both tabs
+    // Add tabs - both tabs share the same table widget and controls
     m_tabWidget->addTab(tabContent, "📋 本地排行榜 (Local)");
     
-    // Create duplicate tab for online (they share same widgets)
+    // For online tab, create a container that will show the same content
+    // Both tabs use the same table widget, filter, and status label
     QWidget *onlineTab = new QWidget(this);
     QVBoxLayout *onlineLayout = new QVBoxLayout(onlineTab);
-    onlineLayout->addWidget(new QLabel("Online leaderboard uses same table above", onlineTab));
+    QLabel *onlineInfo = new QLabel("切換到此標籤將從伺服器載入線上排行榜\n(Switch to this tab to load online leaderboard from server)", onlineTab);
+    onlineInfo->setStyleSheet("QLabel { color: #666; font-size: 12px; padding: 10px; }");
+    onlineInfo->setAlignment(Qt::AlignCenter);
+    onlineLayout->addWidget(onlineInfo);
+    onlineLayout->addStretch();
     m_tabWidget->addTab(onlineTab, "🌐 線上排行榜 (Online)");
     
     mainLayout->addWidget(m_tabWidget);

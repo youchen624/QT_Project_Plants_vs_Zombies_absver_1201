@@ -82,12 +82,18 @@ class LeaderboardHandler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         if self.path.startswith('/api/leaderboard'):
-            # Parse query parameters
+            # Parse query parameters using urllib.parse for proper handling
+            from urllib.parse import parse_qs, urlparse
+            
             level_id = None
             if '?' in self.path:
-                query = self.path.split('?')[1]
-                params = dict(param.split('=') for param in query.split('&') if '=' in param)
-                level_id = int(params.get('levelId', 0))
+                parsed_url = urlparse(self.path)
+                params = parse_qs(parsed_url.query)
+                if 'levelId' in params:
+                    try:
+                        level_id = int(params['levelId'][0])
+                    except (ValueError, IndexError):
+                        level_id = None
             
             # Filter by level if specified
             filtered_scores = leaderboard_data

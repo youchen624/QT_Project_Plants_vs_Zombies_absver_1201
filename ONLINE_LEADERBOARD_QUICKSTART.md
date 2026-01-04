@@ -21,7 +21,7 @@ This project implements a complete online leaderboard system, including:
 ### 步驟 1: 啟動測試伺服器 (Step 1: Start Test Server)
 
 ```bash
-cd /path/to/QT_Project_Plants_vs_Zombies_absver_1201
+cd <project-directory>
 python3 mock_leaderboard_server.py
 ```
 
