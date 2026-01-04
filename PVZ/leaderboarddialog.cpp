@@ -65,8 +65,13 @@ void LeaderboardDialog::setupUI()
     connect(m_tabWidget, &QTabWidget::currentChanged, this, &LeaderboardDialog::onTabChanged);
     
     // Create simple tab placeholders - the actual content is shared below
-    QWidget *localTab = new QWidget(this);
-    QWidget *onlineTab = new QWidget(this);
+    QWidget *localTab = new QWidget();
+    QVBoxLayout *localLayout = new QVBoxLayout(localTab);
+    localLayout->setContentsMargins(0, 0, 0, 0);
+    
+    QWidget *onlineTab = new QWidget();
+    QVBoxLayout *onlineLayout = new QVBoxLayout(onlineTab);
+    onlineLayout->setContentsMargins(0, 0, 0, 0);
     
     m_tabWidget->addTab(localTab, "📋 本地排行榜 (Local)");
     m_tabWidget->addTab(onlineTab, "🌐 線上排行榜 (Online)");
