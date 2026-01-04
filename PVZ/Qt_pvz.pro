@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,7 +28,11 @@ SOURCES += \
     sun.cpp \
     pausemenu.cpp \
     optionsmenu.cpp \
-    plantselect.cpp
+    plantselect.cpp \
+    leaderboardmanager.cpp \
+    leaderboarddialog.cpp \
+    playernamedialog.cpp \
+    networkleaderboardmanager.cpp
 
 HEADERS += \
     qvz.h \
@@ -51,7 +55,11 @@ HEADERS += \
     sun.h \
     pausemenu.h \
     optionsmenu.h \
-    plantselect.h
+    plantselect.h \
+    leaderboardmanager.h \
+    leaderboarddialog.h \
+    playernamedialog.h \
+    networkleaderboardmanager.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

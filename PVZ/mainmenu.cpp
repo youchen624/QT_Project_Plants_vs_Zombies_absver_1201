@@ -15,6 +15,7 @@ MainMenu::MainMenu(QWidget *parent)
 
     // Create buttons
     m_selectLevelButton = new QPushButton("遊玩", this);
+    m_leaderboardButton = new QPushButton("排行榜", this);
     m_exitButton = new QPushButton("離開", this);
 
     // Style buttons
@@ -37,9 +38,11 @@ MainMenu::MainMenu(QWidget *parent)
         "}";
 
     m_selectLevelButton->setStyleSheet(buttonStyle);
+    m_leaderboardButton->setStyleSheet(buttonStyle);
     m_exitButton->setStyleSheet(buttonStyle);
 
     m_selectLevelButton->setMinimumSize(250, 50);
+    m_leaderboardButton->setMinimumSize(250, 50);
     m_exitButton->setMinimumSize(250, 50);
 
     // Layout
@@ -48,11 +51,13 @@ MainMenu::MainMenu(QWidget *parent)
     layout->addWidget(m_titleLabel, 0, Qt::AlignCenter);
     layout->addSpacing(50);
     layout->addWidget(m_selectLevelButton, 0, Qt::AlignCenter);
+    layout->addWidget(m_leaderboardButton, 0, Qt::AlignCenter);
     layout->addWidget(m_exitButton, 0, Qt::AlignCenter);
     layout->addStretch();
 
     // Connect signals
     connect(m_selectLevelButton, &QPushButton::clicked, this, &MainMenu::selectLevel);
+    connect(m_leaderboardButton, &QPushButton::clicked, this, &MainMenu::showLeaderboard);
     connect(m_exitButton, &QPushButton::clicked, this, &MainMenu::exitGame);
 }
 

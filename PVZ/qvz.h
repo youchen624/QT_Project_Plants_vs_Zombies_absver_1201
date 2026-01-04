@@ -24,6 +24,7 @@ private slots:
     void showGameScene();
     void showGameSceneWithLevel(int levelId);
     void showGameSceneWithPlants(QVector<PlantCard::PlantType> plants);
+    void showLeaderboard();
     void showOptions();
     void exitApplication();
     void onGameWon();

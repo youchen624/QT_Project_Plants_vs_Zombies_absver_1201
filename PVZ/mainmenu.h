@@ -15,6 +15,7 @@ public:
 
 signals:
     void selectLevel();
+    void showLeaderboard();
     void exitGame();
 
 protected:
@@ -22,6 +23,7 @@ protected:
 
 private:
     QPushButton *m_selectLevelButton;
+    QPushButton *m_leaderboardButton;
     QPushButton *m_exitButton;
     QLabel *m_titleLabel;
 };

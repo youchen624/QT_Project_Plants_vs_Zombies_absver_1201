@@ -54,3 +54,8 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# Online Leaderboard Test Logs
+pvz_server_test.log
+*.log
+
