@@ -371,7 +371,7 @@ void LeaderboardDialog::updateOnlineDisplay(const QVector<PlayerScore> &scores)
             .arg(resultIcon)
             .arg(score.wavesSurvived, 2)
             .arg(score.zombiesKilled, 3)
-            .arg(score.score, 5);
+            .arg(score.calculateScore(), 5);
     }
     
     displayText += "\n═══════════════════════════════════════════════════════════════\n";
