@@ -17,7 +17,7 @@ NetworkLeaderboardManager& NetworkLeaderboardManager::instance()
 NetworkLeaderboardManager::NetworkLeaderboardManager()
     : QObject(nullptr)
     , m_networkManager(new QNetworkAccessManager(this))
-    , m_serverUrl("http://26.233.90.189:8080/api") // Default mock server URL
+    , m_serverUrl("http://localhost:8080/api") // Default mock server URL //26.233.90.189
     , m_networkEnabled(true)
     , m_lastRequestTime(0)
 {
