@@ -7,9 +7,7 @@
 #include <QComboBox>
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QTabWidget>
 #include "leaderboardmanager.h"
-#include "networkleaderboardmanager.h"
 
 class LeaderboardDialog : public QDialog
 {
@@ -24,26 +22,17 @@ protected:
 private slots:
     void refreshLeaderboard();
     void onFilterChanged(int index);
-    void onTabChanged(int index);
-    void onOnlineLeaderboardReceived(const QVector<PlayerScore> &scores);
-    void onNetworkError(const QString &error);
 
 private:
     void setupUI();
     void updateTable(const QVector<PlayerScore> &scores);
     QString formatTime(qint64 seconds) const;
-    void refreshLocalLeaderboard();
-    void refreshOnlineLeaderboard();
 
-    QTabWidget *m_tabWidget;
     QTableWidget *m_tableWidget;
     QPushButton *m_closeButton;
     QPushButton *m_refreshButton;
     QComboBox *m_filterCombo;
     QLabel *m_titleLabel;
-    QLabel *m_statusLabel;
-    
-    int m_currentTabIndex;
 };
 
 #endif // LEADERBOARDDIALOG_H
