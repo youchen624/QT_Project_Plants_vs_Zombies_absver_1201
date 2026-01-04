@@ -245,8 +245,10 @@ void LeaderboardDialog::onTabChanged(int index)
     // If switching to online tab and we have cached data, display it
     if (m_currentTabIndex == 1 && !m_cachedOnlineScores.isEmpty()) {
         updateTable(m_cachedOnlineScores);
-        m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(m_cachedOnlineScores.size()));
-        m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
+        if (m_statusLabel) {
+            m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(m_cachedOnlineScores.size()));
+            m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
+        }
     } else {
         refreshLeaderboard();
     }
@@ -260,8 +262,10 @@ void LeaderboardDialog::onOnlineLeaderboardReceived(const QVector<PlayerScore> &
     // Update the table if we're currently on the online tab
     if (m_currentTabIndex == 1) {
         updateTable(scores);
-        m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(scores.size()));
-        m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
+        if (m_statusLabel) {
+            m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(scores.size()));
+            m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
+        }
     }
 }
 
