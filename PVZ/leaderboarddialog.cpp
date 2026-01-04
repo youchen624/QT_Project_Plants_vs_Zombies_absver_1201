@@ -65,13 +65,8 @@ void LeaderboardDialog::setupUI()
     connect(m_tabWidget, &QTabWidget::currentChanged, this, &LeaderboardDialog::onTabChanged);
     
     // Create simple tab placeholders - the actual content is shared below
-    QWidget *localTab = new QWidget();
-    QVBoxLayout *localLayout = new QVBoxLayout(localTab);
-    localLayout->setContentsMargins(0, 0, 0, 0);
-    
-    QWidget *onlineTab = new QWidget();
-    QVBoxLayout *onlineLayout = new QVBoxLayout(onlineTab);
-    onlineLayout->setContentsMargins(0, 0, 0, 0);
+    QWidget *localTab = new QWidget(this);
+    QWidget *onlineTab = new QWidget(this);
     
     m_tabWidget->addTab(localTab, "📋 本地排行榜 (Local)");
     m_tabWidget->addTab(onlineTab, "🌐 線上排行榜 (Online)");
@@ -241,31 +236,14 @@ void LeaderboardDialog::refreshOnlineLeaderboard()
 void LeaderboardDialog::onTabChanged(int index)
 {
     m_currentTabIndex = index;
-    
-    // If switching to online tab and we have cached data, display it
-    if (m_currentTabIndex == 1 && !m_cachedOnlineScores.isEmpty()) {
-        updateTable(m_cachedOnlineScores);
-        if (m_statusLabel) {
-            m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(m_cachedOnlineScores.size()));
-            m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
-        }
-    } else {
-        refreshLeaderboard();
-    }
+    refreshLeaderboard();
 }
 
 void LeaderboardDialog::onOnlineLeaderboardReceived(const QVector<PlayerScore> &scores)
 {
-    // Cache the online scores
-    m_cachedOnlineScores = scores;
-    
-    // Update the table if we're currently on the online tab
-    if (m_currentTabIndex == 1) {
+    if (m_currentTabIndex == 1) { // Only update if on online tab
         updateTable(scores);
-        if (m_statusLabel) {
-            m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(scores.size()));
-            m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
-        }
+        m_statusLabel->setText(QString("已載入 %1 筆線上排行榜記錄 (Loaded %1 online records)").arg(scores.size()));
     }
 }
 

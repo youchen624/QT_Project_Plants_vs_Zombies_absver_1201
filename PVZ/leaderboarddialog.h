@@ -44,7 +44,6 @@ private:
     QLabel *m_statusLabel;
     
     int m_currentTabIndex;
-    QVector<PlayerScore> m_cachedOnlineScores; // Cache for online leaderboard data
 };
 
 #endif // LEADERBOARDDIALOG_H
