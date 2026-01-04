@@ -1,5 +1,6 @@
 #include "gamescene.h"
 #include "leaderboardmanager.h"
+#include "networkleaderboardmanager.h"
 #include "playernamedialog.h"
 #include <QDateTime>
 #include <QDebug>
@@ -623,9 +624,13 @@ void GameScene::submitScoreToLeaderboard(bool isWin)
         score.date = QDateTime::currentDateTime();
         score.isWin = isWin;
         
-        // Add to leaderboard
+        // Add to local leaderboard
         LeaderboardManager::instance().addScore(score);
-        qDebug() << "Score submitted:" << score.playerName << "Score:" << score.calculateScore();
+        qDebug() << "Score submitted to local leaderboard:" << score.playerName << "Score:" << score.calculateScore();
+        
+        // Also submit to online leaderboard
+        NetworkLeaderboardManager::instance().submitScore(score);
+        qDebug() << "Score submitted to online leaderboard:" << score.playerName;
     }
 }
 

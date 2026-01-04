@@ -1,0 +1,7 @@
+{
+  "serverUrl": "http://localhost:8080/api",
+  "networkEnabled": true,
+  "requestTimeout": 10000,
+  "rateLimit": 1000,
+  "maxRetries": 3
+}
