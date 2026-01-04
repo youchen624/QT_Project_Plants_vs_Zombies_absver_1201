@@ -42,7 +42,7 @@ void LeaderboardDialog::setupUI()
     m_tabWidget->setStyleSheet(
         "QTabWidget::pane {"
         "   border: 2px solid #4CAF50;"
-        "   background-color: rgba(255, 255, 255, 200);"
+        "   background-color: rgba(255, 255, 255, 0);"
         "   border-radius: 5px;"
         "}"
         "QTabBar::tab {"
@@ -64,9 +64,19 @@ void LeaderboardDialog::setupUI()
     
     connect(m_tabWidget, &QTabWidget::currentChanged, this, &LeaderboardDialog::onTabChanged);
     
-    // Create tab content widget
-    QWidget *tabContent = new QWidget(this);
-    QVBoxLayout *tabLayout = new QVBoxLayout(tabContent);
+    // Create simple tab placeholders - the actual content is shared below
+    QWidget *localTab = new QWidget(this);
+    QWidget *onlineTab = new QWidget(this);
+    
+    m_tabWidget->addTab(localTab, "📋 本地排行榜 (Local)");
+    m_tabWidget->addTab(onlineTab, "🌐 線上排行榜 (Online)");
+    
+    mainLayout->addWidget(m_tabWidget);
+    
+    // Shared content area (filter, status, table) - visible for both tabs
+    QWidget *contentWidget = new QWidget(this);
+    QVBoxLayout *contentLayout = new QVBoxLayout(contentWidget);
+    contentLayout->setContentsMargins(10, 10, 10, 10);
     
     // Filter combo box
     QHBoxLayout *filterLayout = new QHBoxLayout();
@@ -106,13 +116,13 @@ void LeaderboardDialog::setupUI()
             this, &LeaderboardDialog::onFilterChanged);
     filterLayout->addWidget(m_filterCombo);
     filterLayout->addStretch();
-    tabLayout->addLayout(filterLayout);
+    contentLayout->addLayout(filterLayout);
     
     // Status label for network feedback
     m_statusLabel = new QLabel("", this);
     m_statusLabel->setStyleSheet("QLabel { color: #333; font-size: 12px; padding: 5px; }");
     m_statusLabel->setAlignment(Qt::AlignCenter);
-    tabLayout->addWidget(m_statusLabel);
+    contentLayout->addWidget(m_statusLabel);
     
     // Table widget
     m_tableWidget = new QTableWidget(this);
@@ -127,7 +137,8 @@ void LeaderboardDialog::setupUI()
         "   background-color: white;"
         "   gridline-color: #4CAF50;"
         "   font-size: 13px;"
-        "   border: none;"
+        "   border: 2px solid #4CAF50;"
+        "   border-radius: 5px;"
         "}"
         "QTableWidget::item {"
         "   padding: 5px;"
@@ -152,23 +163,9 @@ void LeaderboardDialog::setupUI()
     m_tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_tableWidget->setAlternatingRowColors(true);
     
-    tabLayout->addWidget(m_tableWidget);
+    contentLayout->addWidget(m_tableWidget);
     
-    // Add tabs - both tabs share the same table widget and controls
-    m_tabWidget->addTab(tabContent, "📋 本地排行榜 (Local)");
-    
-    // For online tab, create a container that will show the same content
-    // Both tabs use the same table widget, filter, and status label
-    QWidget *onlineTab = new QWidget(this);
-    QVBoxLayout *onlineLayout = new QVBoxLayout(onlineTab);
-    QLabel *onlineInfo = new QLabel("切換到此標籤將從伺服器載入線上排行榜\n(Switch to this tab to load online leaderboard from server)", onlineTab);
-    onlineInfo->setStyleSheet("QLabel { color: #666; font-size: 12px; padding: 10px; }");
-    onlineInfo->setAlignment(Qt::AlignCenter);
-    onlineLayout->addWidget(onlineInfo);
-    onlineLayout->addStretch();
-    m_tabWidget->addTab(onlineTab, "🌐 線上排行榜 (Online)");
-    
-    mainLayout->addWidget(m_tabWidget);
+    mainLayout->addWidget(contentWidget);
     
     // Buttons
     QHBoxLayout *buttonLayout = new QHBoxLayout();
