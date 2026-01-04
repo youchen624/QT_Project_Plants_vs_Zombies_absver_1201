@@ -1,4 +1,5 @@
 #include "leaderboarddialog.h"
+#include "networkleaderboardmanager.h"
 #include <QHeaderView>
 #include <QPainter>
 #include <QLinearGradient>
@@ -8,8 +9,15 @@ LeaderboardDialog::LeaderboardDialog(QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle("排行榜 - Leaderboard");
-    setMinimumSize(900, 600);
+    setMinimumSize(900, 700);
     setupUI();
+    
+    // Connect network signals
+    connect(&NetworkLeaderboardManager::instance(), &NetworkLeaderboardManager::leaderboardReceived,
+            this, &LeaderboardDialog::onOnlineLeaderboardReceived);
+    connect(&NetworkLeaderboardManager::instance(), &NetworkLeaderboardManager::networkError,
+            this, &LeaderboardDialog::onNetworkError);
+    
     refreshLeaderboard();
 }
 
@@ -68,6 +76,35 @@ void LeaderboardDialog::setupUI()
     filterLayout->addStretch();
     mainLayout->addLayout(filterLayout);
     
+    // Online Leaderboard Section
+    QLabel *onlineTitle = new QLabel("🌐 線上排行榜 (Online Leaderboard - Top 10)", this);
+    onlineTitle->setStyleSheet("QLabel { color: white; font-size: 16px; font-weight: bold; }");
+    mainLayout->addWidget(onlineTitle);
+    
+    m_onlineDisplay = new QTextEdit(this);
+    m_onlineDisplay->setReadOnly(true);
+    m_onlineDisplay->setMaximumHeight(150);
+    m_onlineDisplay->setStyleSheet(
+        "QTextEdit {"
+        "   background-color: rgba(255, 255, 255, 200);"
+        "   border: 2px solid #2196F3;"
+        "   border-radius: 5px;"
+        "   font-family: 'Courier New', monospace;"
+        "   font-size: 12px;"
+        "   padding: 5px;"
+        "}");
+    m_onlineDisplay->setText("點擊「載入線上排行」按鈕查看全球排行榜\nClick 'Load Online Leaderboard' button to view global rankings");
+    mainLayout->addWidget(m_onlineDisplay);
+    
+    m_onlineStatusLabel = new QLabel("", this);
+    m_onlineStatusLabel->setStyleSheet("QLabel { color: white; font-size: 12px; }");
+    mainLayout->addWidget(m_onlineStatusLabel);
+    
+    // Separator
+    QLabel *localTitle = new QLabel("📋 本地排行榜 (Local Leaderboard)", this);
+    localTitle->setStyleSheet("QLabel { color: white; font-size: 16px; font-weight: bold; margin-top: 10px; }");
+    mainLayout->addWidget(localTitle);
+    
     // Table widget
     m_tableWidget = new QTableWidget(this);
     m_tableWidget->setColumnCount(9);
@@ -112,7 +149,8 @@ void LeaderboardDialog::setupUI()
     // Buttons
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     
-    m_refreshButton = new QPushButton("🔄 重新整理", this);
+    m_onlineButton = new QPushButton("🌐 載入線上排行", this);
+    m_refreshButton = new QPushButton("🔄 重新整理本地", this);
     m_closeButton = new QPushButton("✖ 關閉", this);
     
     QString buttonStyle = 
@@ -133,13 +171,34 @@ void LeaderboardDialog::setupUI()
         "   background-color: #3d8b40;"
         "}";
     
+    QString onlineButtonStyle = 
+        "QPushButton {"
+        "   background-color: #2196F3;"
+        "   border: none;"
+        "   color: white;"
+        "   padding: 10px 20px;"
+        "   text-align: center;"
+        "   font-size: 14px;"
+        "   margin: 4px 2px;"
+        "   border-radius: 8px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #0b7dda;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #0960a5;"
+        "}";
+    
+    m_onlineButton->setStyleSheet(onlineButtonStyle);
     m_refreshButton->setStyleSheet(buttonStyle);
     m_closeButton->setStyleSheet(buttonStyle);
     
+    connect(m_onlineButton, &QPushButton::clicked, this, &LeaderboardDialog::loadOnlineLeaderboard);
     connect(m_refreshButton, &QPushButton::clicked, this, &LeaderboardDialog::refreshLeaderboard);
     connect(m_closeButton, &QPushButton::clicked, this, &QDialog::accept);
     
     buttonLayout->addStretch();
+    buttonLayout->addWidget(m_onlineButton);
     buttonLayout->addWidget(m_refreshButton);
     buttonLayout->addWidget(m_closeButton);
     buttonLayout->addStretch();
@@ -243,6 +302,81 @@ QString LeaderboardDialog::formatTime(qint64 seconds) const
     int mins = seconds / 60;
     int secs = seconds % 60;
     return QString("%1:%2").arg(mins).arg(secs, 2, 10, QChar('0'));
+}
+
+void LeaderboardDialog::loadOnlineLeaderboard()
+{
+    m_onlineStatusLabel->setText("🔄 正在載入線上排行榜... (Loading online leaderboard...)");
+    m_onlineStatusLabel->setStyleSheet("QLabel { color: yellow; font-size: 12px; }");
+    m_onlineDisplay->setText("載入中... (Loading...)");
+    
+    qDebug() << "Fetching online leaderboard...";
+    NetworkLeaderboardManager::instance().fetchLeaderboard(0); // Fetch all levels, top scores
+}
+
+void LeaderboardDialog::onOnlineLeaderboardReceived(const QVector<PlayerScore> &scores)
+{
+    qDebug() << "Received" << scores.size() << "online scores";
+    
+    if (scores.isEmpty()) {
+        m_onlineStatusLabel->setText("ℹ️ 線上排行榜暫無資料 (No online data available)");
+        m_onlineStatusLabel->setStyleSheet("QLabel { color: #FFA500; font-size: 12px; }");
+        m_onlineDisplay->setText("目前沒有線上排行資料\nNo online leaderboard data available yet");
+        return;
+    }
+    
+    // Take only top 10
+    int displayCount = qMin(10, scores.size());
+    QVector<PlayerScore> top10;
+    for (int i = 0; i < displayCount; i++) {
+        top10.append(scores[i]);
+    }
+    
+    updateOnlineDisplay(top10);
+    m_onlineStatusLabel->setText(QString("✅ 已載入 %1 筆線上記錄 (Loaded %1 online records)").arg(displayCount));
+    m_onlineStatusLabel->setStyleSheet("QLabel { color: #4CAF50; font-size: 12px; }");
+}
+
+void LeaderboardDialog::onNetworkError(const QString &error)
+{
+    qDebug() << "Network error:" << error;
+    m_onlineStatusLabel->setText("❌ 網路錯誤: " + error + " (Network error)");
+    m_onlineStatusLabel->setStyleSheet("QLabel { color: red; font-size: 12px; }");
+    m_onlineDisplay->setText("無法載入線上排行榜\n" + error + "\n\nUnable to load online leaderboard\n" + error);
+}
+
+void LeaderboardDialog::updateOnlineDisplay(const QVector<PlayerScore> &scores)
+{
+    QString displayText;
+    displayText += "═══════════════════════════════════════════════════════════════\n";
+    displayText += "  🌐 全球排行榜前 " + QString::number(scores.size()) + " 名 (Global Top " + QString::number(scores.size()) + ")\n";
+    displayText += "═══════════════════════════════════════════════════════════════\n\n";
+    
+    for (int i = 0; i < scores.size(); i++) {
+        const PlayerScore &score = scores[i];
+        
+        QString medal = "";
+        if (i == 0) medal = "🥇 ";
+        else if (i == 1) medal = "🥈 ";
+        else if (i == 2) medal = "🥉 ";
+        else medal = QString("   %1. ").arg(i + 1, 2);
+        
+        QString levelText = (score.levelId == 999) ? "無盡" : QString("Lv%1").arg(score.levelId);
+        QString resultIcon = score.isWin ? "✓" : "✗";
+        
+        displayText += QString("%1%2 | %3 | %4 | 波:%5 殭屍:%6 分數:%7\n")
+            .arg(medal)
+            .arg(score.playerName, -15)
+            .arg(levelText, 4)
+            .arg(resultIcon)
+            .arg(score.wavesSurvived, 2)
+            .arg(score.zombiesKilled, 3)
+            .arg(score.score, 5);
+    }
+    
+    displayText += "\n═══════════════════════════════════════════════════════════════\n";
+    
+    m_onlineDisplay->setText(displayText);
 }
 
 void LeaderboardDialog::paintEvent(QPaintEvent* /*event*/)
